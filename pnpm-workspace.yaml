@@ -7,3 +7,8 @@ minimumReleaseAgeExclude:
 
 # Copy packages out of the shared store so tools in other projects can't rewrite ours.
 packageImportMethod: copy
+
+# Security overrides for transitive copies pulled in through blume.
+overrides:
+  path-to-regexp@6.1.0: 6.3.0
+  postcss-selector-parser@6.0.10: 6.1.5
