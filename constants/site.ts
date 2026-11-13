@@ -30,7 +30,7 @@ export const SITE = {
     "The open-source Dynamic Island for React, installed with shadcn. Uploads, timers, calls, rides and music in one animated pill at the top of your web app.",
   author: "Leo",
   /** The public source. */
-  repo: "https://github.com/leoisadev1/islandcn",
+  repo: "https://github.com/opencoredev/islandcn",
 } as const;
 
 /** The registry item that installs the engine. */

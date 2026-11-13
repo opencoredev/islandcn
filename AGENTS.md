@@ -9,7 +9,7 @@ In Leo's local checkout, also read `BRIEF.md` for the goal and `docs/CONTRACT.md
 - Every file is written for this repo. Don't copy from startercn, asciicn or any registry template.
 - The license is MIT, `Copyright (c) 2026 Leo`. Nobody else goes on it.
 - Copy the look and motion of Apple's island, never its assets. The product is islandcn. "Dynamic Island" may be used descriptively, as in the hero's "The open-source Dynamic Island for React", and the footer says islandcn is not affiliated with Apple. Still banned in anything a visitor reads: iOS, iPhone, SF Pro, SF Symbols and "Live Activity" as product copy. No bundled SF Pro, no SF Symbols, no Apple artwork. Fonts use the system stack (`-apple-system, BlinkMacSystemFont`) with Inter or Geist as the fallback.
-- The public repo is github.com/leoisadev1/islandcn. Nothing else goes out (deploy, push, public post) without Leo's OK, and `reference/`, `captures/`, `BRIEF.md`, `docs/CONTRACT.md`, `docs/launch/` and the fidelity, capture and quality scripts never go public.
+- The public repo is github.com/opencoredev/islandcn. Nothing else goes out (deploy, push, public post) without Leo's OK, and `reference/`, `captures/`, `BRIEF.md`, `docs/CONTRACT.md`, `docs/launch/` and the fidelity, capture and quality scripts never go public.
 
 ## Commands
 

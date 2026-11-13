@@ -30,7 +30,7 @@ export default defineConfig({
   navigation: {
     actions: [
       { href: `${SITE_URL}/playground`, label: "Playground" },
-      { href: "https://github.com/leoisadev1/islandcn", label: "GitHub" },
+      { href: "https://github.com/opencoredev/islandcn", label: "GitHub" },
     ],
   },
   // Pages that moved when the docs left Fumadocs keep working.
