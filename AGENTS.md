@@ -25,9 +25,9 @@ pnpm build
 - TypeScript strict, no `any`, no non-null `!`. Arrow functions. Props are an `interface` with a JSDoc line per prop that states its default. Constant tables use `as const satisfies`.
 - Comments say why, in plain words.
 - The engine (`lib/island/`) imports only React and its own files. Shipped files never import site-only modules.
-- Measurements live in `reference/MEASUREMENTS.md` and in one constants table in the engine. Don't scatter magic numbers.
+- Measurements live in one constants table in the engine (`lib/island/metrics.ts` for geometry, `lib/island/motion.ts` for timing). Don't scatter magic numbers. Leo's local checkout also has the raw readings in `reference/MEASUREMENTS.md`.
 - Docs prose is plain and specific. No em dashes, no "seamless", "powerful" or "effortless".
 
 ## Verifying a change
 
-A build or a typecheck is not enough. Open the page in a real browser at 1440x900 and 390x844, and once with reduced motion. For motion, capture frames with `scripts/capture/` and compare them with the reference on `/compare`.
+A build or a typecheck is not enough. Run `pnpm test`, then open the page in a real browser at 1440x900 and 390x844, and once with reduced motion. For motion, play the change on `/lab`. In Leo's local checkout, also capture frames with `scripts/capture/` and compare them with the recordings on `/compare`.

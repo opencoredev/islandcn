@@ -49,7 +49,7 @@ pnpm build         # builds the registry into public/r, then the site
 
 Read `AGENTS.md` before changing anything.
 
-The reference recordings the motion was fitted to are not in this repo, so the fidelity tools (`/lab`, `/compare`) have nothing to show here, and the one test that reads them is skipped.
+The recordings the motion was fitted to are not in this repo. `/lab` still plays every transition from its built-in sequences in `pnpm dev`; `/compare`, which sets the web side against the recordings, has nothing to show, and the one test that reads them is skipped.
 
 ## License
 
