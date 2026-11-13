@@ -1,0 +1,187 @@
+---
+title: Activities
+description: Start an activity when a task begins, update it as the task moves, and end it when the task is done.
+---
+
+Read this when you are wiring the island to one of your app's own tasks. An activity is one task the user is waiting on: a run, an upload, a call. You describe what it shows in each shape and hand it to `start`.
+
+
+```tsx
+"use client";
+
+import { Glyph } from "@/components/islandcn/glyph";
+import { TimerGlyph } from "@/components/islandcn/glyphs";
+import { CompactText, ExpandedTitle } from "@/components/islandcn/island-text";
+import { ProgressRing } from "@/components/islandcn/progress-ring";
+import { useIsland } from "@/lib/island";
+
+export const useTeaTimer = (openTimerScreen: () => void) => {
+  const island = useIsland();
+
+  return () =>
+    island.start({
+      id: "timer",
+      compact: { leading: <Glyph icon={TimerGlyph} />, trailing: <CompactText>5:00</CompactText> },
+      minimal: <ProgressRing value={1} />,
+      expanded: {
+        leading: <ProgressRing value={1} size={44} />,
+        center: <ExpandedTitle>Tea</ExpandedTitle>,
+      },
+      onPress: openTimerScreen,
+    });
+};
+```
+
+## The shape
+
+| Field | What it is |
+| --- | --- |
+| `id` | A stable name for the activity. `island.expand(id)` uses it, and starting the same id again updates it |
+| `label` | What screen readers say, and the pill button's name. Defaults to the id |
+| `priority` | Who keeps the pill when two activities run. Higher wins, then the first started |
+| `group` | Activities with the same group show one at a time, see [Groups](/guides/activities#groups) |
+| `compact` | `{ leading, trailing }` for when it runs alone |
+| `minimal` | The fallback for the split when the compact pair is too wide for it. Falls back to `compact.leading` |
+| `expanded` | `{ leading, trailing, center, bottom }` for a long-press or an alert |
+| `alert` | `true` to open the expanded view briefly, see [Alerts](/guides/actions#alerts) |
+| `onPress` | Called when the user taps the pill while this activity shows |
+
+The full types are in the [activity reference](/api/activity-options).
+
+## The life of an activity
+
+1. `island.start(activity)` adds it and returns a [handle](/api/use-island#activityhandle). The pill grows from idle to compact.
+2. `handle.update(changes)` changes what it shows. Pass only what changed; the regions you leave out keep their content. Updates apply in place; add `transition: "crossfade"` when the content is different rather than newer (see [Numbers and progress](/guides/activities#numbers-and-progress)).
+3. `handle.end()` removes it. With nothing else running, the pill folds back to idle.
+
+Content is React, so it re-renders like the rest of your app. For values that change many times a second, such as a progress ring, render a component that reads your own state instead of calling `update` on every tick. A component that only starts and updates activities can use `useIslandActions()`, which never re-renders it when the island changes.
+
+## As a component
+
+Most presets wrap this in a component with the content kit's `useActivity`, which starts the activity on mount, updates it when its inputs change and ends it on unmount:
+
+```tsx
+"use client";
+
+import { Glyph } from "@/components/islandcn/glyph";
+import { TimerGlyph } from "@/components/islandcn/glyphs";
+import { CompactText } from "@/components/islandcn/island-text";
+import { TickingTime } from "@/components/islandcn/ticking-time";
+import { useActivity } from "@/components/islandcn/use-activity";
+
+export const TimerIsland = ({ endsAt }: { endsAt: number }) => {
+  useActivity(
+    () => ({
+      id: "timer",
+      label: "Tea timer",
+      compact: {
+        leading: <Glyph icon={TimerGlyph} />,
+        trailing: (
+          <CompactText>
+            <TickingTime source={{ kind: "remaining", until: endsAt }} />
+          </CompactText>
+        ),
+      },
+    }),
+    [endsAt],
+  );
+  return null;
+};
+```
+
+Render `<TimerIsland endsAt={...} />` while the timer runs and remove it when it stops.
+
+## Numbers and progress
+
+A live status activity changes in two ways. A newer value of the same thing, such as a percentage going up, changes in place: the digits turn over and the bar moves. Content that is different rather than newer, such as a new track or the next step of a run, crossfades. The engine does both.
+
+### In place
+
+`update` keeps the same content layer, so React updates it like any other component. Two engine primitives animate the change on the island's clock:
+
+```tsx
+import { IslandNumber, IslandProgress } from "@/lib/island";
+
+export const Charging = ({ level }: { level: number }) => (
+  <>
+    <IslandNumber value={Math.round(level * 100)} style={{ fontSize: 34, fontWeight: 700 }} />
+    <IslandProgress value={level} color="#30D158" track="#414141" height={8} />
+  </>
+);
+```
+
+- `IslandNumber` lines the old and new text up from the right and turns over only the characters that changed. The old character shrinks and blurs while it stays bright, then fades out by 0.26 s; the new one appears at 0.2 s, small and soft, and grows and sharpens until about 0.48 s. Digits that stay the same don't move, and going from 9 to 10 turns over both places. `numberMotion` holds the timing.
+- `IslandProgress` springs its fill to the new value (response 0.97, dampingFraction 0.74 by default, fitted on the simulator's bar).
+
+With reduced motion, the number changes with a plain fade and the bar eases over 0.2 s with no overshoot. Their props are in the [primitives reference](/api/primitives).
+
+The presets use them through the content kit: `NumberText` wraps `IslandNumber`, `TickingTime` renders a clock through it, and `LinearProgress` wraps `IslandProgress`. The upload, battery, transfer, timer, recording, call, ETA and now playing presets turn their digits over this way; upload and now playing move their bars with `IslandProgress`.
+
+### A crossfade
+
+Pass `transition: "crossfade"` to replace the content layer with the transition's blur and fade instead:
+
+```tsx
+import { CompactText } from "@/components/islandcn/island-text";
+import type { ActivityHandle } from "@/lib/island";
+
+export const startProcessing = (upload: ActivityHandle) =>
+  upload.update({ transition: "crossfade", compact: { trailing: <CompactText>Processing</CompactText> } });
+```
+
+### With an alert
+
+An alerting update (`alert: true`) expands with the content the activity already had, then applies the update in place 0.12 s later (`motion.alertContentDelay`), as the reference phone does: the island opens, then the number turns over and the bar moves. See [Alerts](/guides/actions#alerts).
+
+## Groups
+
+On the reference phone, one app's live status activities don't split the island between them. One shows, and the others wait. Give activities the same `group` to get that behaviour:
+
+```tsx
+"use client";
+
+import { CompactText } from "@/components/islandcn/island-text";
+import { useIslandActions } from "@/lib/island";
+
+export const useOrders = () => {
+  const island = useIslandActions();
+
+  return () => {
+    island.start({ id: "order-1042", group: "orders", label: "Order 1042", compact: { trailing: <CompactText>12 min</CompactText> } });
+    island.start({ id: "order-1043", group: "orders", label: "Order 1043", compact: { trailing: <CompactText>25 min</CompactText> } });
+    // The island shows order 1042 only. Order 1043 waits hidden.
+  };
+};
+```
+
+Without `group`, every activity shows and two of them split the island, as before.
+
+### Which one shows
+
+The first started shows. The others are hidden, but `island.activities` still lists them, so your UI can show them elsewhere.
+
+### Handing over
+
+An alert on a hidden activity hands the island over to it, measured on the simulator:
+
+1. The shown activity leaves to idle with the dismiss motion.
+2. The island stays idle for 1.458 s (`motion.group.handoff`).
+3. The alerting activity expands from idle, already showing its update.
+4. It returns to compact 6.014 s after the first one left (`motion.group.window`), so the expanded view stays up for about 4.56 s.
+
+The one that left stays hidden until it is brought forward again.
+
+```tsx
+import { ExpandedTitle } from "@/components/islandcn/island-text";
+import type { IslandApi } from "@/lib/island";
+
+export const outForDelivery = (island: IslandApi) =>
+  island.update("order-1043", { alert: true, expanded: { center: <ExpandedTitle>Out for delivery</ExpandedTitle> } });
+```
+
+`island.expand(id)` on a hidden activity brings it forward without the pause. Ending the activity that was brought forward shows the first started again.
+
+### When to use a group
+
+- Use one when several activities come from the same source and only the latest matters to the user: orders from one shop, downloads from one library, sessions of one workout.
+- Leave it out when the activities are different tasks the user wants to see together, such as a timer and music. Those should split.

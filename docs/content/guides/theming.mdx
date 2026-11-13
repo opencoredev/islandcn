@@ -1,0 +1,39 @@
+---
+title: Theming
+description: Match the island to your page with the keyline, accent colours and the content kit's type, and keep the pill itself black.
+---
+
+Read this when you place the island on your own page. The pill stays black in every theme, the way the hardware cutout it imitates does. What you tune is how it meets the page around it and the colours of the content inside it.
+
+## Keyline
+
+On a black screen the island would vanish into the page. The phone draws a thin grey band just outside the black edge: 1.5 pt of white at 16% over #000, fading to nothing by a page colour of about #2C2C2E. The engine draws the same keyline.
+
+```tsx
+import { Island } from "@/lib/island";
+
+export const PageIsland = () => <Island keyline="auto" backdrop="#0b0b0f" />;
+```
+
+| Prop | Values | Default | What it does |
+| --- | --- | --- | --- |
+| `keyline` | `"auto"`, `"on"`, `"off"` | `"auto"` | `"auto"` draws it when `backdrop` is dark, or in dark mode when no `backdrop` is given (assuming a near-black page). `"on"` always draws it, `"off"` never |
+| `backdrop` | a hex or `rgb()` colour | none | The page colour behind the island. Its brightness sets the keyline's strength |
+
+`Island` and `IslandView` both take them.
+
+It shows on compact, on both shapes of the split, and on the expanded island (7% weaker there). The idle island has none. During a collapse it dims to 15% and comes back over 1.1 s, as on the simulator.
+
+Pass `backdrop` whenever you know the page colour. When the page colour comes from a CSS variable, leave it out and the island follows the colour scheme instead.
+
+## Accent colours
+
+Most presets take an `accent` prop for their one colour: orange for a timer, red for recording, green for a call. Colour inside the island carries meaning, so pick one per activity and keep it the same across compact and expanded. The content kit's defaults live in `components/islandcn/theme.ts`.
+
+## Type
+
+Text inside the island uses the system font stack (`-apple-system, BlinkMacSystemFont`, then Inter). The content kit's text styles, `CompactText`, `ExpandedTitle` and `TitleStack`, set the sizes and weights measured on the reference phone: titles semibold, secondary text at 60% white. Use them instead of your page's own type so content lines up with the regions.
+
+## Size
+
+The island has one size. Containers wider than a phone clamp it to phone width (402), so the expanded view is 374 wide everywhere. To change the geometry anyway, pass `metrics` to the provider; the keys are in the [IslandProvider reference](/api/island-provider).

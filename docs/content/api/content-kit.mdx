@@ -1,0 +1,126 @@
+---
+title: "Content kit"
+description: "The pieces island content is built from: text styles, layout frames, glyphs, rings, bars, steps, sparklines, readings and clocks, one registry item each."
+---
+
+The engine draws the pill and moves it. What goes inside is yours, and the content kit gives you pieces measured to fit it. The presets are built from them, and so is any island you write. Each is a registry item; add the ones you need:
+
+```bash
+npx shadcn@latest add {{registry}}/island-content.json {{registry}}/step-progress.json {{registry}}/sparkline.json
+```
+
+`island-content` comes with every other item. None of them adds an npm package.
+
+## `island-content`
+
+The base every island uses.
+
+| Import | What it gives you |
+| --- | --- |
+| `@/components/islandcn/theme` | `islandAccent` (one colour per activity), `islandInk` (white, secondary and tertiary grey, track, fill), `islandSize`, `islandLine`, `islandRow` (lines of the expanded top row), `islandSafe` (insets that keep content clear of the corner arcs), `trackingFor(size)`, `continuousCorner(w, h, radius)`, `tint(hex, alpha)`, `islandFont`, `islandMono` |
+| `@/components/islandcn/glyphs` | The glyph set, Hugeicons' free icons drawn at the island's weight (solid where the platform's glyphs are): media, calls, status, tasks, capture, travel, devices, food. `glyphFrom` makes more |
+| `@/components/islandcn/glyph` | `Glyph` (a glyph sized to the pill) and `IconTile` |
+| `@/components/islandcn/island-text` | `CompactText`, `ExpandedTitle`, `ExpandedSubtitle`, `ContextLabel`, `ExpandedValue`, `Caption`, `TitleStack`, `NumberText`, `MinimalPair`, `withBubble` and `BubbleForm`, `Swap` |
+| `@/components/islandcn/island-layout` | `SensorRow`, `BottomBar`, `ExpandedSide`, `ExpandedBottom`, `ValueStack`, `CaptionButton`, `cornerClearance` |
+| `@/components/islandcn/use-activity` | `useActivity(build, deps)` and `useLatest(value)` |
+
+Two pieces solve problems you will meet on almost every island:
+
+- **`SensorRow`** is the row beside the sensor in a label-led view: a small glyph and a `ContextLabel` saying what is happening on the leading side, a time, a caption or a 26 pt control on the trailing side. It is about 100 pt wide, so a label holds eight or nine characters. Put a longer name in the bottom title.
+- **`withBubble(compact, bubble)`** gives a compact pair a second form for the split capsule, which has about 20 pt after its glyph. "18 min", "B32" or "4:31" would end in an ellipsis there; `bubble` (a ring, the glyph, two digits) shows instead. `<BubbleForm bubble={...}>` does the same for one slot.
+
+```tsx
+import { Glyph } from "@/components/islandcn/glyph";
+import { PackageGlyph } from "@/components/islandcn/glyphs";
+import { BubbleForm, CompactText, withBubble } from "@/components/islandcn/island-text";
+import { ProgressRing } from "@/components/islandcn/progress-ring";
+import { islandAccent } from "@/components/islandcn/theme";
+
+// "18 min" in the pill, "18" in the capsule.
+export const orderTrailing = (minutes: number) => (
+  <BubbleForm bubble={<CompactText color={islandAccent.orange}>{minutes}</CompactText>}>
+    <CompactText color={islandAccent.orange}>{minutes} min</CompactText>
+  </BubbleForm>
+);
+
+// The whole pair swaps to a ring in the capsule.
+export const syncCompact = (progress: number) =>
+  withBubble(
+    { leading: <Glyph icon={PackageGlyph} color={islandAccent.blue} />, trailing: <CompactText>{Math.round(progress * 100)}%</CompactText> },
+    <ProgressRing value={progress} size={20} />,
+  );
+```
+
+## Progress and time
+
+| Item | Exports | Use it for |
+| --- | --- | --- |
+| `progress-ring` | `ProgressRing`, `IconRing` | Progress in compact or the capsule (20 pt), an icon in a ring that fills |
+| `linear-progress` | `LinearProgress`, `TimeProgress` | A bar in `BottomBar`; a bar that fills with time by itself, such as a scrubber |
+| `step-progress` | `StepProgress`, `stepsAt` | Named stages (an order, a build) as segments, or counted rounds (focus sessions, sets) as dots |
+| `countdown-ring` | `CountdownRing` | A ring that runs down to a moment by itself: a code that expires, a session, a hold |
+| `ticking-time` | `TickingTime`, `formatClock`, `formatMinutes` | A clock that counts up or down without re-rendering your component |
+| `spinner`, `shimmer-text` | `Spinner`, `ShimmerText` | Work with no known end |
+
+```tsx
+import { BottomBar } from "@/components/islandcn/island-layout";
+import { StepProgress, stepsAt } from "@/components/islandcn/step-progress";
+import { islandAccent } from "@/components/islandcn/theme";
+
+// Step 3 of 5 failed: two segments green, the third red, two waiting.
+export const buildSteps = (
+  <BottomBar>
+    <StepProgress steps={stepsAt({ total: 5, current: 2, failed: true })} color={islandAccent.green} label="Tests failed, step 3 of 5" />
+  </BottomBar>
+);
+```
+
+## Values and text
+
+| Item | Exports | Use it for |
+| --- | --- | --- |
+| `sparkline` | `Sparkline` | A trend: 30 pt wide in compact, or the full width of the expanded view with `area` and a `baseline` |
+| `metric` | `Metric`, `MetricRow` | Two to four labelled readings across the expanded view: heart rate, pace, distance; gate, seat, boarding |
+| `tail-text` | `TailText` | One growing line that keeps its newest words in view: a transcript, a translation, an agent's output |
+| `level-meter` | `LevelMeter` | Sound or voice levels, animated or from live input |
+
+```tsx
+import { ExpandedBottom } from "@/components/islandcn/island-layout";
+import { MetricRow } from "@/components/islandcn/metric";
+import { Sparkline } from "@/components/islandcn/sparkline";
+import { islandAccent } from "@/components/islandcn/theme";
+
+export const runReadings = (heartHistory: readonly number[]) => (
+  <ExpandedBottom reach="inset" gap={10}>
+    <MetricRow
+      metrics={[
+        { label: "Heart rate", value: 148, unit: "BPM", color: islandAccent.red },
+        { label: "Pace", value: "5′12″", unit: "/km" },
+        { label: "Distance", value: "6.24", unit: "km" },
+      ]}
+    />
+    <Sparkline values={heartHistory} color={islandAccent.red} height={22} strokeWidth={1.75} />
+  </ExpandedBottom>
+);
+```
+
+## Pictures and controls
+
+| Item | Exports | Use it for |
+| --- | --- | --- |
+| `artwork` | `Artwork` | A cover or any square picture with the island's continuous corner; `src` for your image |
+| `avatar` | `Avatar` | A person, a team or a shop: a monogram, or a photo or crest through `src` |
+| `island-button` | `IslandButton`, `IslandRoundButton` | Approve and Deny, Pay, Pause and Skip, with a 44 pt touch area |
+
+For a shape the glyph set doesn't name, such as a lock or a card, make a glyph from any of Hugeicons' free icons, which `island-content` already installs:
+
+```tsx
+import { LockIcon } from "@hugeicons/core-free-icons";
+
+import { glyphFrom } from "@/components/islandcn/glyphs";
+
+// Outlines by default; { parts: "fill" } draws a closed shape solid.
+export const LockGlyph = glyphFrom("LockGlyph", LockIcon);
+```
+
+The [agent skill's recipes]({{site}}/.well-known/agent-skills/islandcn/references/recipes.md) put these together into complete islands: stages, two sides, readings, a price, a code that expires and a transcript.

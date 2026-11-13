@@ -1,0 +1,38 @@
+/*
+ * The site's look on the docs: the system font stack, the site's page and ink
+ * colours, and lagoon as the accent (app/globals.css holds the originals).
+ */
+:root {
+  --blume-font-display: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+  --blume-font-body: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+  --blume-background: #fbfbfd;
+  --blume-foreground: #1d1d1f;
+  --blume-muted-foreground: #6e6e73;
+}
+
+:root[data-theme="dark"] {
+  --blume-background: #000;
+  --blume-foreground: #f5f5f7;
+  --blume-muted-foreground: #86868b;
+}
+
+/* Display tracking tuned for the system face, which is tighter than Inter at large sizes. */
+h1,
+h2,
+h3 {
+  letter-spacing: -0.022em;
+}
+
+/*
+ * The header brand at the site header's size (components/site/header-brand.tsx): the name in 17 px
+ * semibold with -0.02em tracking, the mark 0.62 em of it (10.5 px) tall. Blume draws the mark 20 px tall.
+ */
+header img[src$="/logo-light.svg"],
+header img[src$="/logo-dark.svg"] {
+  height: 10.5px;
+}
+
+header a:has(> img[src$="/logo-light.svg"]) {
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}

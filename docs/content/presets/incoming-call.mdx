@@ -1,0 +1,66 @@
+---
+title: "Incoming call"
+description: "A caller's name with accept and decline buttons, expanded while it rings, then a call timer."
+---
+
+![The Incoming call preset ringing: a cat's photo, "mobile" over "Mochi's sitter", and the red decline and green accept buttons, at real size.](/presets/incoming-call.png)
+
+A ringing call takes over the island: it expands with the caller's photo, their name and two round buttons, and stays open until it's answered or declined. Once answered it settles to a compact call timer. Pass the contact's picture as `avatar`, whatever it is saved with: the example's sitter is saved under the cat they look after.
+
+## Install
+
+```package-install
+npx shadcn@latest add {{registry}}/call-activity.json
+```
+
+This writes `components/islandcn/call-activity.tsx`, plus the content kit and the engine if the project lacks them. Mount the island once first, see [Installation](/installation).
+
+## What it shows
+
+- **Compact:** while ringing, the caller's avatar and a green phone glyph; on a call, a 241 pt pill, as the reference's: a handset and the call's length in semibold on the leading side and a two-tone level meter (green and orange bars with pale cores) on the trailing side, all in the light green the island uses for a live call (#76fb73), lighter than the accept button's.
+- **Split:** its compact pair, as the reference phone shows it, in the pill or in the 62.18 wide capsule. When the pair is too wide for the split, the fallback is the phone glyph, with the call's length once answered.
+- **Expanded:** while ringing, on the shortest island (84 pt): a 50 pt avatar (the photo, or initials without one), the kind of call in small grey type over the caller's name in white semibold, and 50 pt red decline and green accept buttons, a flat handset on one and a raised one on the other. On a call, the grey line becomes the call's length in green, and a level meter takes the accept button's place. Answering settles the island back to compact.
+- **Updates:** the call's length turns over its digits with the engine's `IslandNumber`.
+
+## Usage
+
+```tsx components/call-island.tsx
+"use client";
+
+import { useState } from "react";
+
+import { CallActivity, type CallState } from "@/components/islandcn/call-activity";
+
+export const CallIsland = ({ caller, photo, onHangUp }: { caller: string; photo?: string; onHangUp: () => void }) => {
+  const [state, setState] = useState<CallState>({ kind: "ringing" });
+  return (
+    <CallActivity
+      caller={caller}
+      subtitle="mobile"
+      avatar={photo}
+      state={state}
+      onAccept={() => setState({ kind: "active", since: Date.now() })}
+      onDecline={onHangUp}
+    />
+  );
+};
+```
+
+## Props
+
+<TypeTable
+  type={{
+    "caller": { type: "string", required: true, description: "Who is calling." },
+    "state": { type: "{ kind: \"ringing\" } | { kind: \"active\"; since: number }", required: true, description: "Ringing, or on a call since an epoch ms." },
+    "onAccept": { type: "() => void", required: true, description: "Accept button while ringing." },
+    "onDecline": { type: "() => void", required: true, description: "Decline while ringing, end while on a call." },
+    "subtitle": { type: "string", default: "\"Audio call\"", description: "The small grey line over the name while ringing: the kind of call, such as \"mobile\" or \"Video call\"." },
+    "avatar": { type: "string", default: "the caller's initials", description: "The contact's photo, an image URL: a face, a pet, whatever the contact is saved with. The initials show while it loads." },
+    "id": { type: "string", default: "\"call\"", description: "Activity id." },
+    "priority": { type: "number", default: "2", description: "A call outranks most activities, so it takes the main pill." },
+  }}
+/>
+
+## Make it yours
+
+Install this preset when it is exactly what you need. Otherwise open it in the [Playground]({{site}}/playground), change what each region shows and copy the code, or read its source for technique and build your own island on the engine.

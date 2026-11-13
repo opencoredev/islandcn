@@ -1,0 +1,65 @@
+---
+title: "ActivityOptions"
+description: "The object you pass to start: an id, a label, a priority, and the content for compact, minimal and expanded."
+---
+
+```tsx
+import type { ActivityOptions, ActivityUpdate } from "@/lib/island";
+```
+
+## `ActivityOptions`
+
+```ts
+import type { ReactNode } from "react";
+
+interface ActivityOptions {
+  id: string;
+  label?: string;                            // spoken by screen readers, default the id
+  priority?: number;                         // default 0
+  onPress?: () => void;                      // tap (shorter than a long-press)
+  alert?: boolean;                           // expand briefly on start
+  group?: string;                            // share a group to show one at a time
+  compact?: { leading?: ReactNode; trailing?: ReactNode };
+  minimal?: ReactNode;
+  expanded?: { leading?: ReactNode; trailing?: ReactNode; center?: ReactNode; bottom?: ReactNode };
+}
+```
+
+<TypeTable
+  type={{
+    "id": { type: "string", required: true, description: "Stable name. start with the same id updates the running activity." },
+    "label": { type: "string", default: "the id", description: "Read by screen readers, and the pill button's name." },
+    "priority": { type: "number", default: "0", description: "With two activities, the higher priority takes the attached pill; ties go to the first started." },
+    "onPress": { type: "() => void", description: "Called on a tap, a press shorter than the long-press." },
+    "alert": { type: "boolean", default: "false", description: "Expand briefly on start, like an alerting live status activity." },
+    "group": { type: "string", description: "Activities with the same group show one at a time, as one app's live status activities do. See Groups." },
+    "compact": { type: "{ leading, trailing }", description: "Either side of the sensor. Each side fits its own content, up to 72 wide; a longer plain string ends in an ellipsis. With content on both sides, the shorter side grows to 0.7475 of the other. Also what the split shows. See Layout rules." },
+    "minimal": { type: "ReactNode", default: "compact.leading", description: "Shown when the island splits and the compact pair is too wide for the split. See Split." },
+    "expanded": { type: "{ leading, trailing, center, bottom }", description: "Top row of leading, center, trailing, then bottom across the full width. leading and trailing start at the top, center below the sensor. Height follows the content, from 84 to 180." },
+  }}
+/>
+
+Every content slot takes any React node.
+
+## `ActivityUpdate`
+
+What `update` takes. Every field is optional, and nested content merges: `{ compact: { trailing } }` keeps the leading slot. To clear a slot, pass it as `undefined` explicitly.
+
+```ts
+import type { ReactNode } from "react";
+
+interface ActivityUpdate {
+  compact?: { leading?: ReactNode; trailing?: ReactNode };
+  minimal?: ReactNode;
+  expanded?: { leading?: ReactNode; trailing?: ReactNode; center?: ReactNode; bottom?: ReactNode };
+  label?: string;
+  priority?: number;
+  onPress?: () => void;
+  alert?: boolean;                           // expanded for motion.alertHold, then back
+  transition?: "update" | "crossfade";       // default "update" (in place)
+}
+```
+
+`alert: true` on an update expands the island with the old content, applies the update 0.12 s later (`motion.alertContentDelay`), and returns to compact after `motion.alertHold` (5.975 s). See [Alerts](/guides/actions#alerts).
+
+`transition: "crossfade"` replaces the content layer with a blur and fade, for content that is different rather than newer. The default, `"update"`, changes it in place, so `IslandNumber` and `IslandProgress` animate the change. See [Numbers and progress](/guides/activities#numbers-and-progress).

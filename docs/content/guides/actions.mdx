@@ -1,0 +1,83 @@
+---
+title: Actions
+description: What taps, long-presses and keys do to the island, how to add buttons to the expanded view, and when to alert.
+---
+
+Read this when the island needs to respond to the user: open your app's screen on a tap, show controls on a long-press, or ask for attention when something changes.
+
+## Gestures
+
+The island answers these gestures, with timings measured on the simulator:
+
+| Gesture | Result | In code |
+| --- | --- | --- |
+| Hold the pill | Expands the primary activity 0.22 s after touch-down | `island.expand(id)` |
+| Hold the detached capsule | Expands the second activity | `island.expand(id)` |
+| Tap the pill (released within 0.1 s) | Calls the activity's `onPress` on release | |
+| Press anywhere outside, or Escape | Collapses | `island.collapse()` |
+| Enter or Space on the focused pill | Toggles expanded | |
+
+Every press swells the pill from touch-down, a uniform scale about its centre toward 1.12, with the content scaling along. What happens next depends on how long the finger stays:
+
+- **Still down at 0.1 s** (`motion.press.decide`): it is a long-press. The island expands at 0.22 s (`motion.longPress`) from the swollen shape and keeps its speed, even if the finger lifts in between.
+- **Released before 0.1 s**: it is a tap. `onPress` runs on release, and the swell springs back from 0.22 s on an overdamped spring, at rest by about 0.9 s.
+- **The idle island** swells the same way and springs back at 0.25 s even with the finger down, since it has nothing to expand.
+- **The capsule**: only the capsule swells, then it joins the pill and the island expands through about idle size.
+
+`expand` and `collapse` are there for everything that isn't a finger: a keyboard shortcut, a button elsewhere on the page, a guided tour. Keep a visible control for anything the expanded view offers, because a long-press is not discoverable.
+
+## Taps
+
+Give the activity an `onPress` to run on a tap, such as opening the screen that owns the task:
+
+```tsx
+"use client";
+
+import { Glyph } from "@/components/islandcn/glyph";
+import { PackageGlyph } from "@/components/islandcn/glyphs";
+import { CompactText } from "@/components/islandcn/island-text";
+import { useIslandActions } from "@/lib/island";
+
+export const useOrderIsland = (openOrder: () => void) => {
+  const island = useIslandActions();
+  return () =>
+    island.start({
+      id: "order",
+      label: "Order on its way",
+      compact: { leading: <Glyph icon={PackageGlyph} />, trailing: <CompactText>12m</CompactText> },
+      onPress: openOrder,
+    });
+};
+```
+
+## Buttons in the expanded view
+
+Expanded content takes pointer events and focus, so a button inside it works like any other. Use the content kit's `IslandButton` for the round, filled controls the presets use; the [timer](/presets/timer) and [incoming call](/presets/incoming-call) presets show the pattern. A button's handler runs without collapsing the island, so call `island.collapse()` yourself when the action is final.
+
+## Alerts
+
+Most updates change the compact view quietly. Some changes need attention: a call rings, a payment needs confirming, a delivery arrives. For those, pass `alert: true`, on `start` or on an update:
+
+```tsx
+import { ExpandedSubtitle, ExpandedTitle } from "@/components/islandcn/island-text";
+import type { ActivityHandle } from "@/lib/island";
+
+export const reportDelivered = (order: ActivityHandle) =>
+  order.update({
+    alert: true,
+    expanded: {
+      center: <ExpandedTitle>Your order is here</ExpandedTitle>,
+      bottom: <ExpandedSubtitle>Left at the front door</ExpandedSubtitle>,
+    },
+  });
+```
+
+The island expands, holds for `motion.alertHold` (5.975 s, as measured on the simulator), then returns to compact, the way an alerting live status update does on the reference phone.
+
+An alerting update expands with the content the activity already had, then applies the update in place 0.12 s later (`motion.alertContentDelay`). A number drawn with `IslandNumber` turns over and an `IslandProgress` bar moves once the expanded view is in, as on the reference phone. See [Numbers and progress](/guides/activities#numbers-and-progress).
+
+An alert collapses on its own. To keep the island open until the user acts, as a ringing call does, call `island.expand(id)` instead: an explicit expand stays until a press outside, Escape or `collapse()`.
+
+An alert on an activity hidden in a [group](/guides/activities#groups) hands the island over to it: the shown one leaves to idle, the island waits 1.458 s, and the alerting one expands.
+
+Use alerts sparingly. An island that keeps opening stops being noticed.

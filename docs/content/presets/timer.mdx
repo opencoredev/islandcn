@@ -1,0 +1,81 @@
+---
+title: "Timer"
+description: "A countdown with the time left on the trailing side and pause and cancel buttons when expanded."
+---
+
+![The Timer preset, expanded, at real size.](/presets/timer.png)
+
+A countdown that ticks on its own. You pass when it ends (or how much is left while paused); the time in the island updates every second without re-rendering your component.
+
+## Install
+
+```package-install
+npx shadcn@latest add {{registry}}/timer-activity.json
+```
+
+This writes `components/islandcn/timer-activity.tsx`, plus the content kit and the engine if the project lacks them. Mount the island once first, see [Installation](/installation).
+
+## What it shows
+
+- **Compact:** a timer glyph and the time left.
+- **Split:** its compact pair, as the reference phone shows it, in the pill or in the 62.18 wide capsule. When the pair is too wide for the split, the fallback is a ring that empties as time runs out, with the time left beside it.
+- **Expanded:** pause and cancel buttons when you pass handlers, the label, and the time left in large type.
+- **Updates:** the time turns over its digits each second with the engine's `IslandNumber`. In the expanded view the time sits in a frame as tall as the buttons, so the two stay level on the top-aligned row.
+
+## Usage
+
+```tsx components/tea-timer.tsx
+"use client";
+
+import { useState } from "react";
+
+import { TimerActivity, type TimerState } from "@/components/islandcn/timer-activity";
+
+const TEA = 4 * 60_000;
+
+// The timer starts from a click, not on render: reading the clock while rendering breaks static builds.
+export const TeaTimer = () => {
+  const [state, setState] = useState<TimerState | null>(null);
+  return (
+    <>
+      <button type="button" onClick={() => setState({ kind: "running", endsAt: Date.now() + TEA })}>
+        Start tea
+      </button>
+      {state ? (
+        <TimerActivity
+          label="Tea"
+          state={state}
+          duration={TEA}
+          onToggle={() =>
+            setState((s) =>
+              s?.kind === "running" ? { kind: "paused", remaining: s.endsAt - Date.now() } : s && { kind: "running", endsAt: Date.now() + s.remaining },
+            )
+          }
+          onCancel={() => setState(null)}
+          onEnd={() => setState(null)}
+        />
+      ) : null}
+    </>
+  );
+};
+```
+
+## Props
+
+<TypeTable
+  type={{
+    "state": { type: "{ kind: \"running\"; endsAt: number } | { kind: \"paused\"; remaining: number }", required: true, description: "Running with an end time (epoch ms), or paused with the time left (ms)." },
+    "duration": { type: "number", required: true, description: "Full length in ms, for the ring in the minimal fallback." },
+    "label": { type: "string", default: "\"Timer\"", description: "Name in the expanded view." },
+    "accent": { type: "string", default: "orange", description: "Accent colour." },
+    "onToggle": { type: "() => void", description: "Pause or resume button in the expanded view." },
+    "onCancel": { type: "() => void", description: "Cancel button in the expanded view." },
+    "onEnd": { type: "() => void", description: "Called when a running timer reaches zero." },
+    "id": { type: "string", default: "\"timer\"", description: "Activity id." },
+    "priority": { type: "number", default: "0", description: "Higher priority takes the main pill when two activities run." },
+  }}
+/>
+
+## Make it yours
+
+Install this preset when it is exactly what you need. Otherwise open it in the [Playground]({{site}}/playground), change what each region shows and copy the code, or read its source for technique and build your own island on the engine.

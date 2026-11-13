@@ -1,0 +1,128 @@
+---
+title: Compact, expanded and split
+description: The four shapes the island takes, which one shows when, and how to write content that fits each.
+sidebar:
+  label: Compact, expanded, split
+---
+
+Read this before you design an activity's content. The island always shows one of four presentations, and the provider picks it from how many activities run and what the user did. You fill the regions; the island decides the shape.
+
+| Presentation | When it shows | Regions |
+| --- | --- | --- |
+| `idle` | No activity is running | None. The pill rests at the size of the camera cutout |
+| `compact` | One activity is running | `leading` and `trailing`, on either side of the sensor area |
+| `minimal` | Two activities are showing | The primary's compact pair in the attached pill, the second's in a capsule beside it |
+| `expanded` | A long-press, `expand()`, or an alerting update | `leading`, `center` and `trailing` on the top row, `bottom` below |
+
+Sizes below are points, measured from simulator recordings of the reference phone, and the engine draws one CSS pixel per point.
+
+## Idle
+
+A black capsule, 94.85 by 36.84, 13.91 from the top of the screen and centred on it. It is the shape the other presentations grow out of and return to, and it marks the **sensor area**: the camera and sensors sit there on the phone, so content never goes in it.
+
+## Compact
+
+The pill grows outward from the sensor area: `leading` to its left, `trailing` to its right. Each side fits its own content, so a pill with a 22 pt glyph on one side and "42" on the other is 150.18 wide and sits slightly off centre. When both sides have content, the shorter side grows to at least 0.7475 of the longer one and keeps its content at the outer edge. Each slot stops at 72 pt. The height stays 36.85. Keep compact content short: a glyph or ring on the leading side, a few characters or a value on the trailing side. The rules are in [Layout rules](/guides/presentations#layout-rules).
+
+## Minimal
+
+With a second activity, the island splits. On the reference phone both shapes show their activity's compact content: the primary's `compact.leading` and `compact.trailing` side by side in the attached pill, which grows only to the left and keeps its right end at the sensor's edge, and the second's in a capsule 7.82 to the right. The capsule is 62.18 wide whenever it has a trailing value. An activity's `minimal` view shows only when the pair is too wide for the split. Activities that share a [group](/guides/activities#groups) never split: one shows at a time. See [Split](/guides/presentations#split).
+
+## Expanded
+
+The pill grows into a wide card, 374.34 wide with 13.83 from each side and the top, so it sits concentric with the screen corner. The top row holds `leading`, `center` and `trailing`: the sides start at the top beside the sensor, and `center` starts below the sensor. Nothing is centred against a taller neighbour, so content that should sit level brings its own frame (see [Layout rules](/guides/presentations#the-expanded-row-is-top-aligned)). `bottom` spans the width underneath. The height follows the content, from 84 to 180. Use it for the detail and the controls: a title, a progress bar, buttons.
+
+Each region takes any React node. Where the numbers come from is in [How it's measured](/how-its-measured).
+
+## Layout rules
+
+The engine lays out content the way the simulator does, so the same content lands in the same place. Four rules decide most of what you see. Sizes are points, one CSS pixel each.
+
+### Compact sides balance
+
+Each side of the compact pill fits its own content, so a 22 pt glyph on the left and "42" on the right make a pill slightly off centre. When both sides have content, neither may reach less than **0.7475** of the other beyond the sensor area (`metrics.compact.balance`). The short side grows to that length and its content stays at the pill's outer edge, which leaves black space between the content and the sensor.
+
+| Measured compact pill | Leading side | Trailing side | Ratio |
+| --- | --- | --- | --- |
+| A: 22 pt circle and "42" | 29.00 | 26.33 | 0.908, unchanged |
+| W: 22 pt circle and a wider value | 35.66, grown; the circle stops 6.65 short of the sensor | 47.66 | 0.748 |
+| B: 22 pt circle and "8" | 28.99 | 21.65, grown; the "8" starts 5.57 after the sensor | 0.747 |
+
+Sides are measured beyond the sensor area. A pill with a glyph on the left and a word such as "Sending" on the right shows the effect: the left side grows and the glyph stays at the outer edge.
+
+A side with nothing in it stays at the sensor; the rule applies only to two sides of content. Set `metrics={{ compact: { balance: 0 } }}` to let each side fit its content only.
+
+### Compact slots end in an ellipsis
+
+A compact slot never grows past 72 pt (`metrics.compact.maxSlotWidth`). A plain string or number longer than that ends in an ellipsis. Other content, such as an element or an `IslandNumber`, is clipped at 72 pt, so keep compact values to a few characters.
+
+### The split capsule has one width
+
+In the split, the detached capsule is 62.18 wide whenever its activity has a trailing value, whatever that value is. The value sits centred in the room after the leading glyph, and a plain string wider than that room ends in an ellipsis: on the simulator, "12:45" shows as "1…". The room after a 22 pt glyph is about 20 pt, so one or two digits, a short meter or a small ring fit; a four-character time does not. Content other than a plain string is clipped at that width. See [Split](/guides/presentations#split).
+
+### The expanded row is top-aligned
+
+In the expanded view, `leading` and `trailing` start at the top, beside the sensor. `center` starts below the sensor's bottom edge, about 20 pt lower, as the reference phone places it. Nothing is centred against a taller neighbour.
+
+The content frame is not centred on the island: it is inset 18.5 pt on the leading side and 17.81 on the trailing side (`metrics.expanded.padding.side` and `padding.trailing`), as measured on the simulator. The center region still sits on the island's centre line.
+
+That matches the reference phone: a 52 pt tile on the leading side and a 34 pt value on the trailing side both start at the top, and the title sits below the sensor between them. Content that should sit level with something taller brings its own frame, as a native region does with a fixed frame height. The content kit's `ExpandedSide` does this:
+
+```tsx
+import type { ReactNode } from "react";
+
+import { Avatar } from "@/components/islandcn/avatar";
+import { ExpandedSide } from "@/components/islandcn/island-layout";
+import { TitleStack } from "@/components/islandcn/island-text";
+import type { ActivityOptions } from "@/lib/island";
+
+// `buttons` is your own row of round buttons: decline and accept.
+export const callExpanded = (buttons: ReactNode): ActivityOptions["expanded"] => ({
+  leading: (
+    <ExpandedSide>
+      <Avatar name="Maya Lindqvist" size={48} />
+    </ExpandedSide>
+  ),
+  center: <TitleStack title="Maya Lindqvist" subtitle="mobile" />,
+  trailing: <ExpandedSide align="end">{buttons}</ExpandedSide>,
+});
+```
+
+`ExpandedSide` defaults to `islandRow.titleStack` (63.07), the bottom of a two-line title in the center region, so the avatar and the buttons sit level with the caller's name. Pass `height` to match something else, such as the 52 pt artwork the now playing preset centres its meter on.
+
+### Corners
+
+Every outline has continuous corners: a circular arc that eases into the straight edges. The expanded island's corner radius is 47.9 (the simulator measures 48.2 as a plain circle; the continuous corner that matches it is 47.9), and content is clipped to a rounded rectangle inside it with a radius of 34.4. A square tile or a bar that reaches a bottom corner loses its corner to that arc, as on the phone. The content kit's `ExpandedBottom` has `reach="lift"` and `reach="action"` for rows that must stay whole.
+
+Rounded squares inside the island, such as the content kit's `IconTile` and the now playing artwork, use the same continuous corner (radius 12 on a 52 pt tile). `continuousCorner(width, height, radius)` in the theme returns the `clip-path` for your own.
+
+## Split
+
+With two activities showing, the island splits: the primary activity keeps the pill, and the second moves into a capsule beside it. The capsule pinches off the pill with a gooey neck, and merges back the same way when one activity ends.
+
+You don't call anything to split. Start a second activity and the provider splits the island; end one and it returns to the compact view of the one left. Activities that share a [group](/guides/activities#groups) don't split; they take turns.
+
+### Which side is which
+
+The primary activity has the highest `priority`, then the earliest start. It takes the attached pill. A ringing call (`priority: 2`) therefore stays in the pill when a timer starts.
+
+### What the reference phone does
+
+Measured from simulator recordings:
+
+- Both shapes show their activity's **compact** content, leading and trailing side by side. The lone-glyph minimal view of earlier system versions never appeared.
+- The attached pill grows only to the left of the sensor area. Its right end stays at the sensor's right edge.
+- The capsule sits 7.82 to the right of the pill and is **62.18 wide** whenever its activity has a trailing value, whatever that value is. The value is centred in the room after the leading glyph, about 20 pt, and text wider than that ends in an ellipsis: "12:45" shows as "1…".
+- Splitting from compact first pulls the pill in toward the idle shape, then grows it into one blob that pinches off into the capsule about half a second in.
+
+### Writing content for the split
+
+The split shows `compact.leading` and `compact.trailing`, so write those to work in either place:
+
+- Keep the trailing value short enough for the capsule: one or two digits, a short meter, a small ring. A plain string that is too wide ends in an ellipsis; anything else, including `IslandNumber` and the presets' ticking clocks, is clipped at the capsule's room.
+- Make the pair recognisable on its own: the user sees it next to another activity's.
+- Keep colour meaningful: orange for a timer, red for recording.
+
+`minimal` is the fallback. When the attached pill and the capsule together would be wider than 290 (`metrics.split.maxSpan`), each shape shows its activity's `minimal` view instead, or `compact.leading` when there is none. The content kit's `MinimalPair` lays out a glyph and a value for it: `<MinimalPair leading={<Glyph icon={TimerGlyph} />} trailing={<CompactText>4:32</CompactText>} />`.
+
+Hold either shape to expand that activity. Holding the capsule swells only the capsule; it then joins the pill and the island expands.

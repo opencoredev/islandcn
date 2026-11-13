@@ -1,0 +1,137 @@
+[
+  {
+    "name": "island-core",
+    "type": "registry:lib",
+    "title": "Island core",
+    "description": "The islandcn engine: a Dynamic Island-style pill for React with no animation library. Closed-form SwiftUI springs (response, dampingFraction, blendDuration) that retarget mid-flight, an activity stack (compact, minimal split, expanded, alerting updates, long-press, groups that show one activity at a time), an SVG shape with continuous corners (an arc eased into each edge, fitted to the simulator) and a metaball split, content that follows the shape and crossfades with blur and scale under a fixed sensor cutout, a dark-page keyline, IslandNumber and IslandProgress primitives that animate in-place updates, press and tap timing from touch-down, reduced-motion crossfades, and a pausable clock with devtools for frame-exact captures.",
+    "docs": "Wrap your app in <IslandProvider>, render <Island /> at the top of a positioned container (or placement=\"viewport\"), and start activities with useIsland().start({ id, compact, minimal, expanded }). To have your coding agent build islands on this engine, add the islandcn skill: npx shadcn@latest add {{REGISTRY_URL}}/islandcn-skill.json",
+    "dependencies": [],
+    "files": [
+      {
+        "path": "lib/island/index.ts",
+        "type": "registry:lib",
+        "target": "lib/island/index.ts"
+      },
+      {
+        "path": "lib/island/choreography.ts",
+        "type": "registry:lib",
+        "target": "lib/island/choreography.ts"
+      },
+      {
+        "path": "lib/island/clock.ts",
+        "type": "registry:lib",
+        "target": "lib/island/clock.ts"
+      },
+      {
+        "path": "lib/island/config.ts",
+        "type": "registry:lib",
+        "target": "lib/island/config.ts"
+      },
+      {
+        "path": "lib/island/context.ts",
+        "type": "registry:lib",
+        "target": "lib/island/context.ts"
+      },
+      {
+        "path": "lib/island/devtools.ts",
+        "type": "registry:lib",
+        "target": "lib/island/devtools.ts"
+      },
+      {
+        "path": "lib/island/frame.ts",
+        "type": "registry:lib",
+        "target": "lib/island/frame.ts"
+      },
+      {
+        "path": "lib/island/geometry.ts",
+        "type": "registry:lib",
+        "target": "lib/island/geometry.ts"
+      },
+      {
+        "path": "lib/island/island-root.tsx",
+        "type": "registry:lib",
+        "target": "lib/island/island-root.tsx"
+      },
+      {
+        "path": "lib/island/layer.tsx",
+        "type": "registry:lib",
+        "target": "lib/island/layer.tsx"
+      },
+      {
+        "path": "lib/island/metrics.ts",
+        "type": "registry:lib",
+        "target": "lib/island/metrics.ts"
+      },
+      {
+        "path": "lib/island/motion.ts",
+        "type": "registry:lib",
+        "target": "lib/island/motion.ts"
+      },
+      {
+        "path": "lib/island/path.ts",
+        "type": "registry:lib",
+        "target": "lib/island/path.ts"
+      },
+      {
+        "path": "lib/island/perf.ts",
+        "type": "registry:lib",
+        "target": "lib/island/perf.ts"
+      },
+      {
+        "path": "lib/island/platform.ts",
+        "type": "registry:lib",
+        "target": "lib/island/platform.ts"
+      },
+      {
+        "path": "lib/island/primitives.tsx",
+        "type": "registry:lib",
+        "target": "lib/island/primitives.tsx"
+      },
+      {
+        "path": "lib/island/provider.tsx",
+        "type": "registry:lib",
+        "target": "lib/island/provider.tsx"
+      },
+      {
+        "path": "lib/island/spring.ts",
+        "type": "registry:lib",
+        "target": "lib/island/spring.ts"
+      },
+      {
+        "path": "lib/island/store.ts",
+        "type": "registry:lib",
+        "target": "lib/island/store.ts"
+      },
+      {
+        "path": "lib/island/skirt.ts",
+        "type": "registry:lib",
+        "target": "lib/island/skirt.ts"
+      },
+      {
+        "path": "lib/island/surface.tsx",
+        "type": "registry:lib",
+        "target": "lib/island/surface.tsx"
+      },
+      {
+        "path": "lib/island/types.ts",
+        "type": "registry:lib",
+        "target": "lib/island/types.ts"
+      },
+      {
+        "path": "lib/island/use-island.ts",
+        "type": "registry:lib",
+        "target": "lib/island/use-island.ts"
+      },
+      {
+        "path": "lib/island/view.tsx",
+        "type": "registry:lib",
+        "target": "lib/island/view.tsx"
+      },
+      {
+        "path": "lib/island/README.md",
+        "type": "registry:file",
+        "target": "lib/island/README.md"
+      }
+    ]
+  }
+]

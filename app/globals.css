@@ -1,0 +1,441 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+/*
+ * Fumadocs' search dialog uses ::highlight() utilities that Next's CSS parser
+ * rejects, so every build logged a parse error. Skip them; search works the
+ * same, only the in-text highlight of the matched words is lost.
+ */
+@source not inline("[&_::highlight(fd-search)]:text-fd-primary");
+@source not inline("[&_::highlight(fd-search)]:underline");
+
+@custom-variant dark (&:where(.dark, .dark *));
+/* A desktop layout in a window under 900 px tall (a 1280x800 laptop): the gallery's pinned column tightens to fit. */
+@custom-variant short (@media (min-width: 1024px) and (max-height: 899.98px));
+
+/*
+ * Site tokens. Every site colour goes through a --site-* variable, named for
+ * its role. The page is quiet greys so the island, always pure black, is the
+ * only object on it. Lagoon (--site-accent) marks the agent's status and
+ * nothing else; see components/site/README.md.
+ */
+:root {
+  --site-bg: #fbfbfd;
+  --site-ink: #1d1d1f;
+  /* 4.95:1 on --site-bg. */
+  --site-muted: #6e6e73;
+  --site-line: rgb(0 0 0 / 0.08);
+  /* Fills for controls: segmented tracks, the command field, code. */
+  --site-fill: #f3f3f6; /* --site-muted on it: 4.58:1 */
+  /* Raised control on a fill (the selected segment) and panels. */
+  --site-raised: #ffffff;
+  /* Tool panels, such as the studio's inspector. */
+  --site-panel: #ffffff;
+  --site-focus: #1d1d1f;
+  --site-accent: #047b62; /* lagoon deep, 5.2:1 on --site-bg */
+  --site-font: -apple-system, BlinkMacSystemFont, var(--font-inter), "Inter", system-ui, sans-serif;
+  --site-font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --background: var(--site-bg);
+  --foreground: var(--site-ink);
+}
+
+.dark {
+  --site-bg: #000;
+  --site-ink: #f5f5f7;
+  /* 6.0:1 on #000. */
+  --site-muted: #86868b;
+  --site-line: rgb(255 255 255 / 0.12);
+  --site-fill: #161617;
+  --site-raised: #2a2a2d;
+  --site-panel: #0e0e0f;
+  --site-focus: #f5f5f7;
+  --site-accent: #46f0c6; /* lagoon, 14.5:1 on #000 */
+}
+
+/* Fumadocs reads its own colour variables; point them at the site tokens. */
+:root,
+.dark {
+  --color-fd-background: var(--site-bg);
+  --color-fd-foreground: var(--site-ink);
+  --color-fd-muted: var(--site-fill);
+  --color-fd-muted-foreground: var(--site-muted);
+  --color-fd-popover: var(--site-bg);
+  --color-fd-popover-foreground: var(--site-ink);
+  --color-fd-card: var(--site-bg);
+  --color-fd-card-foreground: var(--site-ink);
+  --color-fd-border: var(--site-line);
+  --color-fd-primary: var(--site-ink);
+  --color-fd-primary-foreground: var(--site-bg);
+  --color-fd-secondary: var(--site-fill);
+  --color-fd-secondary-foreground: var(--site-ink);
+  --color-fd-accent: var(--site-fill);
+  --color-fd-accent-foreground: var(--site-ink);
+  --color-fd-ring: var(--site-focus);
+}
+
+@theme inline {
+  --color-site-bg: var(--site-bg);
+  --color-site-ink: var(--site-ink);
+  --color-site-muted: var(--site-muted);
+  --color-site-line: var(--site-line);
+  --color-site-fill: var(--site-fill);
+  --color-site-raised: var(--site-raised);
+  --color-site-panel: var(--site-panel);
+  --color-site-focus: var(--site-focus);
+  --color-site-accent: var(--site-accent);
+  --font-sans: var(--site-font);
+  --font-mono: var(--site-font-mono);
+}
+
+/*
+ * The type scale, five steps. Sizes follow the product pages this site is
+ * measured against: display at 96 on a wide screen and 48 on a phone, a
+ * headline step under it, and 17 px body. Tracking tightens with size; -0.025em
+ * sits between SF's (it ships tight) and Inter's (it needs more at display size).
+ */
+@theme {
+  --text-display: clamp(3rem, 1.6rem + 5.6vw, 6rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.025em;
+  --text-display--font-weight: 600;
+  --text-headline: clamp(2.5rem, 1.55rem + 3.9vw, 4.5rem);
+  --text-headline--line-height: 1.06;
+  --text-headline--letter-spacing: -0.022em;
+  --text-headline--font-weight: 600;
+  --text-title: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
+  --text-title--line-height: 1.1;
+  --text-title--letter-spacing: -0.018em;
+  --text-title--font-weight: 600;
+  --text-lede: clamp(1.1875rem, 1.05rem + 0.55vw, 1.5rem);
+  --text-lede--line-height: 1.38;
+  --text-lede--letter-spacing: -0.01em;
+  --text-lede--font-weight: 600;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.47;
+  --text-body--letter-spacing: -0.012em;
+  --text-caption: 0.875rem;
+  --text-caption--line-height: 1.43;
+  --text-caption--letter-spacing: -0.006em;
+}
+
+html {
+  /* Anchored sections clear the sticky header. */
+  scroll-padding-top: 4rem;
+}
+
+body {
+  background: var(--site-bg);
+  color: var(--site-ink);
+  font-family: var(--site-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--site-ink) 16%, transparent);
+}
+
+/* One focus ring for the whole site: ink on paper, paper on ink. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--site-focus);
+  outline-offset: 2px;
+}
+
+/* Docs chrome: the same type and greys as the rest of the site. */
+#nd-docs-layout,
+#nd-page {
+  font-family: var(--site-font);
+}
+/*
+ * Fumadocs tweens the sidebar column (a registered length), so crossing the md breakpoint slid the
+ * grid through a clipped, very narrow article for 150 ms. Column and offset changes are layout:
+ * they apply at once.
+ */
+#nd-docs-layout {
+  transition: none;
+}
+/*
+ * The sidebar list scrolls above the Appearance row. Its scroll area ends at a gap between two rows
+ * (`DocsSidebarFit`), so at rest no link is cut or faded; the short fade over that gap only shows
+ * while the list scrolls, and the room at the end lets the real last item scroll fully clear.
+ */
+#nd-sidebar [data-radix-scroll-area-viewport] {
+  mask-image: linear-gradient(to bottom, transparent, #000 12px, #000 calc(100% - var(--sidebar-fade, 12px)), transparent);
+  padding-bottom: 24px;
+}
+/*
+ * Below md the docs have their own header bar. It takes the site header's height, gutter and
+ * lockup size (site-header.tsx: h-16, px-5 then sm:px-8, 15 px), so the logo stays put moving
+ * between the docs and the rest of the site (council 24: it sat 4 px left and 5 px higher). The
+ * page and the "on this page" bar take the same gutter, so the title still lines up under it.
+ */
+@media (max-width: 767px) {
+  #nd-docs-layout {
+    --fd-header-height: 64px !important;
+    --site-docs-gutter: 20px;
+  }
+  #nd-subnav {
+    padding-inline-start: var(--site-docs-gutter);
+  }
+  #nd-page,
+  [data-toc-popover-trigger],
+  [data-toc-popover-content] > div {
+    padding-inline: var(--site-docs-gutter);
+  }
+}
+@media (min-width: 640px) and (max-width: 767px) {
+  #nd-docs-layout {
+    --site-docs-gutter: 32px;
+  }
+}
+#nd-page h1 {
+  font-size: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+  font-weight: 600;
+}
+.prose {
+  --tw-prose-body: var(--site-ink);
+  --tw-prose-headings: var(--site-ink);
+  --tw-prose-links: var(--site-ink);
+  --tw-prose-bold: var(--site-ink);
+  --tw-prose-code: var(--site-ink);
+  --tw-prose-counters: var(--site-muted);
+  --tw-prose-bullets: var(--site-muted);
+  --tw-prose-hr: var(--site-line);
+  --tw-prose-quotes: var(--site-ink);
+  --tw-prose-quote-borders: var(--site-line);
+  --tw-prose-captions: var(--site-muted);
+  --tw-prose-th-borders: var(--site-line);
+  --tw-prose-td-borders: var(--site-line);
+}
+/* Body copy only: the table of contents is prose-sm too and keeps its size. */
+.prose:not(.prose-sm) {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  letter-spacing: -0.012em;
+}
+.prose :where(h2) {
+  font-size: 1.75rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin-top: 2.6em;
+}
+.prose :where(h3) {
+  font-size: 1.3125rem;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+.prose :where(a):not(:where(.not-prose *)) {
+  text-decoration-color: color-mix(in oklab, var(--site-ink) 30%, transparent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.prose :where(:not(pre) > code):not(:where(.not-prose *)) {
+  background: var(--site-fill);
+  border: 0;
+  border-radius: 6px;
+  padding: 0.12em 0.36em;
+  font-size: 0.86em;
+}
+
+/*
+ * Anything that scrolls up under the header fades out as it goes, so no half line of display type,
+ * cut card or slice of the large island shows at the header's edge (the header has no line of its
+ * own, so a cut there reads as a stray fragment). Nothing dims before it gets there: the view
+ * timeline's top is the header's lower edge (64 px), and the fade starts as the element's top
+ * crosses it. It runs over the element's own height, at most `--site-exit-span` (240 px), and eases
+ * in, so the part still below the header stays clear until late and then goes quickly. Put it on a
+ * section's whole block of copy rather than on each line: faded line by line, a heading went while
+ * its button still sat below, alone on the page. Browsers without scroll timelines keep the
+ * header's own soft edge. `.site-exit-fade-lg` does the same from lg up only, for the gallery's tiles,
+ * which below lg pass under the pinned stage instead of the header.
+ *
+ * Two knobs, both inherited. `--site-exit-line` moves the timeline's top down: the home tour sets it
+ * to the foot of the header's 20 px soft edge, so a name is gone before any of it sits in that edge.
+ * `--site-exit-foot` is the part of the block's foot left out of the run: the tour sets it to
+ * everything under a block's first line, so the block is gone as that line reaches the soft edge.
+ * Timed on a whole padded step, a name was still half there when only its descenders were left
+ * below the header, and they showed as a grey fragment under it (council 22).
+ */
+@supports (animation-timeline: view()) {
+  :root {
+    /* An ease-in (about t cubed): clear for most of the run, then quickly gone. */
+    --site-exit-ease: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  }
+  @keyframes site-exit-fade {
+    to {
+      opacity: 0;
+    }
+  }
+  .site-exit-fade {
+    animation: site-exit-fade var(--site-exit-ease) both;
+    animation-timeline: view(block var(--site-exit-line, 64px) 0px);
+    animation-range: exit 0% exit min(calc(100% - var(--site-exit-foot, 0px)), var(--site-exit-span, 240px));
+  }
+  /*
+   * The home hero's app card is a tall slab of colour, so it goes faster and evenly: from its top
+   * reaching the header, gone once 150 px of it (110 on a phone) has gone under, so its grey never
+   * rests there as a cut card.
+   */
+  .site-hero-exit {
+    animation: site-exit-fade linear both;
+    animation-timeline: view(block 64px 0px);
+    animation-range: exit 0% exit 150px;
+  }
+  @media (max-width: 639.98px) {
+    .site-hero-exit {
+      animation-range: exit 0% exit 110px;
+    }
+  }
+  /*
+   * Below lg the home tour's screen is stuck under the header until the tour ends, then goes up under
+   * it. A screen cut by the header from the top left only its search field showing there for a moment,
+   * a strip of app under the header (council 25). It fades instead, evenly, as the hero's card does:
+   * from its top leaving the header's foot, gone once 110 px of it has gone under, while its title and
+   * search field are still whole below the header.
+   */
+  @media (max-width: 1023.98px) {
+    .site-tour-stage-exit {
+      animation: site-exit-fade linear both;
+      animation-timeline: view(block 64px 0px);
+      animation-range: exit 0% exit 110px;
+    }
+  }
+  /*
+   * Below lg the gallery's stage pins with its top at the header's soft foot (84 px, 96 from sm) until
+   * the tiles end, then goes up under the header. With the ease-in exit fade the compact island's
+   * lower edge was still near full strength in the soft edge, a dark lozenge on the grey (council 26).
+   * It fades evenly instead, as the tour's screen does: from its top leaving the soft foot, gone 48 px
+   * later, when the island's foot (48 px down the stage) is still at the soft edge's foot.
+   */
+  @media (max-width: 1023.98px) {
+    .site-gallery-stage-exit {
+      animation: site-exit-fade linear both;
+      animation-timeline: view(block 84px 0px);
+      animation-range: exit 0% exit 48px;
+    }
+  }
+  /* From sm the stage pins 96 px down, so the fade has to start from there too (D31 review: at 768 and 1023 it ended 12 px early, still at 0.1). */
+  @media (min-width: 640px) and (max-width: 1023.98px) {
+    .site-gallery-stage-exit {
+      animation-timeline: view(block 96px 0px);
+    }
+  }
+  /*
+   * Below lg the home tour's names pass under its stuck screen, not the header: each name, line and
+   * button fades out over the band under the screen's foot and is gone when its top reaches the foot
+   * (`--tour-fade-line` and `--tour-fade-band` from preset-chapter.tsx), so the screen's edge never
+   * slices a line of text.
+   */
+  @media (max-width: 1023.98px) {
+    .site-tour-step > * {
+      animation: site-exit-fade linear both;
+      animation-timeline: view(block var(--tour-fade-line) 0px);
+      animation-range: exit 0% exit var(--tour-fade-band);
+    }
+  }
+  @media (min-width: 1024px) {
+    .site-exit-fade-lg {
+      animation: site-exit-fade var(--site-exit-ease) both;
+      animation-timeline: view(block var(--site-exit-line, 64px) 0px);
+      animation-range: exit 0% exit min(calc(100% - var(--site-exit-foot, 0px)), var(--site-exit-span, 240px));
+    }
+  }
+}
+
+/*
+ * The gallery's stage keeps one height for every preset and view (the tallest expanded island
+ * fits it), so nothing under it moves. At rest that left about 200 px of empty grey under a
+ * compact island with the hint and buttons pressed to the foot, which read as dead space. Here the
+ * demo's foot (the stage's last child: the hint and its buttons) spans from under the compact
+ * island to the foot and centres its content, as the playground's hint sits; when the island
+ * expands it glides to the foot, out of the expanded view's way, and comes back once the island
+ * has shrunk. Two flexible spacers do it: the lower one gives way while the island is expanded,
+ * and each cancels one of the column's 10 px gaps so the content ends where it always has.
+ */
+.site-gallery-stage [data-demo-stage] > div:last-child {
+  top: 56px;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+}
+.site-gallery-stage [data-demo-stage] > div:last-child::before,
+.site-gallery-stage [data-demo-stage] > div:last-child::after {
+  content: "";
+  flex: 1 1 0;
+  transition: flex-grow 260ms cubic-bezier(0.23, 1, 0.32, 1) 140ms;
+}
+.site-gallery-stage [data-demo-stage] > div:last-child::before {
+  margin-bottom: -10px;
+}
+.site-gallery-stage [data-demo-stage] > div:last-child::after {
+  margin-top: -10px;
+}
+.site-gallery-stage [data-demo-stage]:has([data-presentation="expanded"]) > div:last-child::after {
+  flex-grow: 0;
+  transition-delay: 0ms;
+}
+/*
+ * A preset's hint ("Hold the island to see the upload") describes the live demo. In the gallery and
+ * the docs (`data-demo-view` on the demo's wrapper) every other view is a still that holds its
+ * presentation: expanded already shows what the hold would, and a hold on the compact or split
+ * still does nothing, so the hint goes. The demo's hint is the only paragraph in that row; its
+ * buttons are buttons.
+ */
+[data-demo-view]:not([data-demo-view="live"]) > [data-demo-stage] > div:last-child > p,
+[data-demo-view]:not([data-demo-view="live"]) > * > [data-demo-stage] > div:last-child > p {
+  display: none;
+}
+/*
+ * A block that scrolls sideways (scroll-fade.tsx): the edge with more past it fades out over
+ * `--site-scroll-fade`, so a line cut there reads as one that goes on rather than one that ends.
+ */
+.site-scroll-fade {
+  --site-scroll-fade: 40px;
+}
+.site-scroll-fade[data-fade-end] {
+  mask-image: linear-gradient(to right, #000 calc(100% - var(--site-scroll-fade)), transparent);
+}
+.site-scroll-fade[data-fade-start] {
+  mask-image: linear-gradient(to right, transparent, #000 var(--site-scroll-fade));
+}
+.site-scroll-fade[data-fade-start][data-fade-end] {
+  mask-image: linear-gradient(to right, transparent, #000 var(--site-scroll-fade), #000 calc(100% - var(--site-scroll-fade)), transparent);
+}
+/*
+ * The docs' code blocks fade harder (`.site-scroll-fade-strong`). With the even 40 px fade a line cut
+ * at a phone's edge still read as text that stops there (`islandc`, `UploadG`: council 26). Here the
+ * text holds until 40 px from the edge, is down to about half 14 px later and to a trace 28 px in,
+ * and the last 4 px are empty, so the cut letters visibly run on under the edge.
+ */
+.site-scroll-fade-strong[data-fade-end] {
+  mask-image: linear-gradient(to right, #000 calc(100% - 40px), rgb(0 0 0 / 0.5) calc(100% - 26px), rgb(0 0 0 / 0.12) calc(100% - 12px), transparent calc(100% - 4px));
+}
+.site-scroll-fade-strong[data-fade-start] {
+  mask-image: linear-gradient(to right, transparent 4px, rgb(0 0 0 / 0.12) 12px, rgb(0 0 0 / 0.5) 26px, #000 40px);
+}
+.site-scroll-fade-strong[data-fade-start][data-fade-end] {
+  mask-image: linear-gradient(
+    to right,
+    transparent 4px,
+    rgb(0 0 0 / 0.12) 12px,
+    rgb(0 0 0 / 0.5) 26px,
+    #000 40px,
+    #000 calc(100% - 40px),
+    rgb(0 0 0 / 0.5) calc(100% - 26px),
+    rgb(0 0 0 / 0.12) calc(100% - 12px),
+    transparent calc(100% - 4px)
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-gallery-stage [data-demo-stage] > div:last-child::before,
+  .site-gallery-stage [data-demo-stage] > div:last-child::after {
+    transition: none;
+  }
+}

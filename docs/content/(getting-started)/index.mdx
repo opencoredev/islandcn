@@ -1,0 +1,106 @@
+---
+title: Overview
+description: islandcn is the open-source Dynamic Island for React. It shows what your app is doing in one black pill at the top of the page.
+sidebar:
+  label: Overview
+---
+
+Use islandcn when your app has work the user waits on, such as an upload, a timer, a call or a delivery, and you want its status in one place that grows when it needs attention and gets out of the way when it doesn't.
+
+## What you install
+
+islandcn ships through the shadcn CLI, so the code lands in your project and you own it.
+
+<CardGroup cols={2}>
+  <Card title="The engine" icon="cpu" href="/api/island-provider">
+    `island-core`, written to `lib/island/`. A provider that holds a stack of activities, the pill that draws them, and the springs that move between shapes. It depends on React and nothing else.
+  </Card>
+  <Card title="Presets" icon="layout-grid" href="/presets">
+    Ten ready islands in `components/islandcn/`, one file each, plus the small content kit they share: text styles, glyphs, rings, bars and buttons.
+  </Card>
+</CardGroup>
+
+## How it behaves
+
+An activity is one task. You start it with what it shows in each shape, update it as the task moves, and end it when the task is done. The island picks the shape:
+
+- **Idle:** nothing runs. A small black capsule.
+- **Compact:** one activity. A glyph on the left of the camera area, a value on the right.
+- **Split:** two activities. The main one keeps the pill and the second moves into a round capsule beside it.
+- **Expanded:** a long-press or an alert. A wide card with a title, details and controls.
+
+```tsx components/upload-button.tsx
+"use client";
+
+import { Glyph } from "@/components/islandcn/glyph";
+import { UploadGlyph } from "@/components/islandcn/glyphs";
+import { ExpandedBottom } from "@/components/islandcn/island-layout";
+import { ExpandedTitle } from "@/components/islandcn/island-text";
+import { LinearProgress } from "@/components/islandcn/linear-progress";
+import { ProgressRing } from "@/components/islandcn/progress-ring";
+import { useIsland } from "@/lib/island";
+
+// Your upload: it sends the file and reports progress from 0 to 1.
+import { sendFile } from "./send-file";
+
+/** How long the "Uploaded" alert gets before the activity ends: the alert's own hold, about 6 s, and a beat. */
+const DONE_MS = 7000;
+
+export const UploadButton = ({ file }: { file: File }) => {
+  const island = useIsland();
+
+  const upload = async () => {
+    // One id per upload, so a second upload can't be ended by the first one's timer below.
+    const activity = island.start({
+      id: `upload-${crypto.randomUUID()}`,
+      label: `Uploading ${file.name}`,
+      compact: { leading: <Glyph icon={UploadGlyph} />, trailing: <ProgressRing value={0} size={20} /> },
+      expanded: {
+        center: <ExpandedTitle>{file.name}</ExpandedTitle>,
+        bottom: (
+          <ExpandedBottom>
+            <LinearProgress value={0} />
+          </ExpandedBottom>
+        ),
+      },
+    });
+
+    // As the upload moves on, the ring and the bar follow it.
+    await sendFile(file, (value: number) => {
+      activity.update({
+        compact: { trailing: <ProgressRing value={value} size={20} /> },
+        expanded: {
+          bottom: (
+            <ExpandedBottom>
+              <LinearProgress value={value} />
+            </ExpandedBottom>
+          ),
+        },
+      });
+    });
+
+    // When it lands, open the island to say so. The alert closes by itself; end the activity after it.
+    activity.update({ alert: true, expanded: { center: <ExpandedTitle>Uploaded</ExpandedTitle> } });
+    window.setTimeout(() => activity.end(), DONE_MS);
+  };
+
+  return <button onClick={() => void upload()}>Upload</button>;
+};
+```
+
+## What it is not
+
+- It is not a notification system. Use it for tasks with a beginning and an end.
+- It draws no platform assets. The look is drawn from scratch, the glyphs are Hugeicons' free set (MIT) drawn for the island, and text uses the system font stack.
+- Sizes are CSS pixels tuned to a 402 px wide phone screen. On a wider screen the island keeps the same size, so it never stretches across a desktop window.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Add the engine to a shadcn project and mount the island once.
+  </Card>
+  <Card title="Quick start" icon="rocket" href="/quick-start">
+    Start, update and end your first activity in about five minutes.
+  </Card>
+</CardGroup>

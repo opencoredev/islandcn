@@ -1,0 +1,43 @@
+---
+title: Presets
+description: Nine finished islands built on the engine, one file each. Install one as it is, or read it for technique and build your own.
+sidebar:
+  label: All presets
+---
+
+Pick a preset when your task matches one of these closely. When it doesn't, build your island on the engine and open the closest preset to see how it lays out the compact slots, which shape it alerts into, and how it drives a ring from state.
+
+| Preset | Registry item | What it shows |
+| --- | --- | --- |
+| [Upload](/presets/upload) | `upload-activity` | A photo or file upload: the thumbnail, a ring with the percentage, and a check when it lands |
+| [Timer](/presets/timer) | `timer-activity` | A countdown with the time left, and pause and cancel buttons when expanded |
+| [Now playing](/presets/now-playing) | `now-playing-activity` | Artwork, a live level meter, and transport controls when expanded |
+| [Incoming call](/presets/incoming-call) | `call-activity` | A caller with accept and decline buttons while it rings, then a call timer |
+| [Ride or delivery ETA](/presets/eta) | `eta-activity` | Minutes until a ride or delivery arrives, with the driver and an optional Message button |
+| [Recording](/presets/recording) | `recording-activity` | A recording dot, an elapsed timer and a level meter |
+| [Nearby transfer](/presets/transfer) | `nearby-transfer-activity` | A photo or file going to a device nearby, or coming from it, with a stop button |
+| [Battery](/presets/battery) | `battery-activity` | Charge level and charging state, shown briefly |
+| [Split](/presets/split) | `split-demo` | Two activities at once, attached pill and capsule |
+
+## Every preset page has the same parts
+
+- **Install:** the one command that adds it.
+- **What it shows:** compact, split, expanded and how it updates.
+- **Usage:** a component you can paste.
+- **Props:** every prop with its default.
+
+## What the presets share
+
+Every preset depends on `island-content`, the kit the presets share. The shadcn CLI installs it, and `island-core`, with the first preset you add. It holds:
+
+- `theme.ts`: the colours and type sizes.
+- `glyphs.tsx`: the glyph set, Hugeicons' free icons (MIT) drawn at the weight of system glyphs, solid where those are.
+- `Glyph` and `IconTile`: size a glyph to the pill or a label, or set it on a round marker such as the ride's car. For a shape the glyph set doesn't name, `glyphFrom` turns any free Hugeicons icon into a glyph that both take.
+- `island-text.tsx`: the compact and expanded text styles.
+- `useActivity`: binds an activity to a component's lifetime.
+
+The other kit pieces (rings, bars, steps, sparklines, readings, clocks, buttons, artwork) are one registry item each. [Content kit](/api/content-kit) lists them all, with what each is for.
+
+Every preset is a component: render one while the task runs, and the activity starts on mount, follows its props and ends on unmount.
+
+See them all running in the [playground]({{site}}/playground), where you can change what each region shows and copy the code.

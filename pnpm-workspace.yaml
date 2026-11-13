@@ -1,0 +1,9 @@
+allowBuilds:
+  esbuild: true
+  sharp: true
+
+minimumReleaseAgeExclude:
+  - blume@2.2.7
+
+# Copy packages out of the shared store so tools in other projects can't rewrite ours.
+packageImportMethod: copy

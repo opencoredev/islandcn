@@ -1,0 +1,53 @@
+[
+  {
+    "name": "islandcn-skill",
+    "type": "registry:item",
+    "title": "islandcn agent skill",
+    "description": "An agent skill that teaches Claude Code, Codex, Cursor and other coding agents to build any Dynamic Island-style island on the islandcn engine. Installs the engine and the skill into .agents/skills/islandcn and .claude/skills/islandcn.",
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json"
+    ],
+    "files": [
+      {
+        "path": "skills/islandcn/SKILL.md",
+        "type": "registry:file",
+        "target": ".agents/skills/islandcn/SKILL.md"
+      },
+      {
+        "path": "skills/islandcn/SKILL.md",
+        "type": "registry:file",
+        "target": ".claude/skills/islandcn/SKILL.md"
+      },
+      {
+        "path": "skills/islandcn/references/api.md",
+        "type": "registry:file",
+        "target": ".agents/skills/islandcn/references/api.md"
+      },
+      {
+        "path": "skills/islandcn/references/api.md",
+        "type": "registry:file",
+        "target": ".claude/skills/islandcn/references/api.md"
+      },
+      {
+        "path": "skills/islandcn/references/design.md",
+        "type": "registry:file",
+        "target": ".agents/skills/islandcn/references/design.md"
+      },
+      {
+        "path": "skills/islandcn/references/design.md",
+        "type": "registry:file",
+        "target": ".claude/skills/islandcn/references/design.md"
+      },
+      {
+        "path": "skills/islandcn/references/recipes.md",
+        "type": "registry:file",
+        "target": ".agents/skills/islandcn/references/recipes.md"
+      },
+      {
+        "path": "skills/islandcn/references/recipes.md",
+        "type": "registry:file",
+        "target": ".claude/skills/islandcn/references/recipes.md"
+      }
+    ]
+  }
+]

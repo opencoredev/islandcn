@@ -1,0 +1,251 @@
+{
+ "note": "Share links written by the first link format (version 1, base64url JSON), captured from main 53fdf80, and the builds they held.",
+ "links": {
+  "upload": "eyJ2IjoxLCJmIjoidXBsb2FkIiwicCI6eyJwcm9ncmVzcyI6MC43LCJ0aW1lciI6eyJtb2RlIjoiY291bnRkb3duIiwic2Vjb25kcyI6MzAwfSwiaWQiOiJ1cGxvYWQiLCJsYWJlbCI6IlLDqXN1bcOpIHVwbG9hZCDinJMiLCJhY2NlbnQiOiJvcmFuZ2UiLCJyZWdpb25zIjp7ImNvbXBhY3RMZWFkaW5nIjp7ImtpbmQiOiJnbHlwaCIsImljb24iOiJDbG91ZEFycm93VXAifSwiY29tcGFjdFRyYWlsaW5nIjp7ImtpbmQiOiJyaW5nIiwiaWNvbiI6bnVsbH0sIm1pbmltYWwiOnsia2luZCI6InJpbmciLCJpY29uIjoiQXJyb3dVcCJ9LCJleHBhbmRlZExlYWRpbmciOnsia2luZCI6InRpbGUiLCJpY29uIjoiQ2xvdWRBcnJvd1VwIn0sImV4cGFuZGVkQ2VudGVyIjp7ImtpbmQiOiJ0aXRsZSIsInRpdGxlIjoibGF1bmNoLWN1dC12My5tb3YiLCJzdWJ0aXRsZSI6IlRvIFRlYW0gRHJpdmUiLCJsaW5lcyI6MX0sImV4cGFuZGVkVHJhaWxpbmciOnsia2luZCI6InBlcmNlbnQiLCJjYXB0aW9uIjp7InRleHQiOiIyMCBvZiA0OCBNQiIsInByZXNzIjpudWxsfX0sImV4cGFuZGVkQm90dG9tIjp7ImtpbmQiOiJiYXIiLCJjYXB0aW9uIjoiIiwiY2FuY2VsIjp0cnVlfX19LCJzIjpudWxsLCJtIjp7fSwiciI6MCwidCI6ImRhcmsifQ",
+  "split": "eyJ2IjoxLCJmIjoic3BsaXQiLCJwIjp7InByb2dyZXNzIjowLjQyLCJ0aW1lciI6eyJtb2RlIjoiY291bnRkb3duIiwic2Vjb25kcyI6MjcyfSwiaWQiOiJ0aW1lciIsImxhYmVsIjoiVGltZXIiLCJhY2NlbnQiOiJvcmFuZ2UiLCJyZWdpb25zIjp7ImNvbXBhY3RMZWFkaW5nIjp7ImtpbmQiOiJnbHlwaCIsImljb24iOiJUaW1lciJ9LCJjb21wYWN0VHJhaWxpbmciOnsia2luZCI6InRpbWVyIiwiZm9ybWF0IjoiY2xvY2siLCJjYXB0aW9uIjp7InRleHQiOiIiLCJwcmVzcyI6bnVsbH0sImVuZCI6ZmFsc2V9LCJtaW5pbWFsIjp7ImtpbmQiOiJnbHlwaCIsImljb24iOiJUaW1lciJ9LCJleHBhbmRlZExlYWRpbmciOnsia2luZCI6ImJ1dHRvbnMiLCJidXR0b25zIjpbeyJpY29uIjoiUGF1c2UiLCJsYWJlbCI6IlBhdXNlIiwidG9uZSI6InRpbnRlZCIsImFjdGlvbiI6Im5vbmUifSx7Imljb24iOiJYIiwibGFiZWwiOiJDYW5jZWwiLCJ0b25lIjoibmV1dHJhbCIsImFjdGlvbiI6ImRpc21pc3MifV19LCJleHBhbmRlZENlbnRlciI6eyJraW5kIjoibGFiZWwiLCJ0ZXh0IjoiVGltZXIifSwiZXhwYW5kZWRUcmFpbGluZyI6eyJraW5kIjoidGltZXIiLCJmb3JtYXQiOiJjbG9jayIsImNhcHRpb24iOnsidGV4dCI6IiIsInByZXNzIjpudWxsfSwiZW5kIjpmYWxzZX0sImV4cGFuZGVkQm90dG9tIjp7ImtpbmQiOiJub25lIn19fSwicyI6eyJwcm9ncmVzcyI6MC40MiwidGltZXIiOnsibW9kZSI6ImVsYXBzZWQiLCJzZWNvbmRzIjozOH0sImlkIjoibm93LXBsYXlpbmciLCJsYWJlbCI6IlNhbHR3YXRlciBTdGF0aWMgYnkgVGhlIExhZ29vbiBDbHViIiwiYWNjZW50IjoiYXJ0IiwicmVnaW9ucyI6eyJjb21wYWN0TGVhZGluZyI6eyJraW5kIjoiYXJ0Iiwic2VlZCI6IlNhbHR3YXRlciBTdGF0aWMgVGhlIExhZ29vbiBDbHViIn0sImNvbXBhY3RUcmFpbGluZyI6eyJraW5kIjoibWV0ZXIifSwibWluaW1hbCI6eyJraW5kIjoibm9uZSJ9LCJleHBhbmRlZExlYWRpbmciOnsia2luZCI6ImFydCIsInNlZWQiOiJTYWx0d2F0ZXIgU3RhdGljIFRoZSBMYWdvb24gQ2x1YiJ9LCJleHBhbmRlZENlbnRlciI6eyJraW5kIjoidGl0bGUiLCJ0aXRsZSI6IlNhbHR3YXRlciBTdGF0aWMiLCJzdWJ0aXRsZSI6IlRoZSBMYWdvb24gQ2x1YiIsImxpbmVzIjoxfSwiZXhwYW5kZWRUcmFpbGluZyI6eyJraW5kIjoibWV0ZXIifSwiZXhwYW5kZWRCb3R0b20iOnsia2luZCI6InNjcnViYmVyIiwibGVuZ3RoIjoyMTQsImJ1dHRvbnMiOlt7Imljb24iOiJTa2lwQmFjayIsImxhYmVsIjoiUHJldmlvdXMgdHJhY2siLCJ0b25lIjoibmV1dHJhbCIsImFjdGlvbiI6Im5vbmUifSx7Imljb24iOiJQYXVzZSIsImxhYmVsIjoiUGF1c2UiLCJ0b25lIjoibmV1dHJhbCIsImFjdGlvbiI6Im5vbmUifSx7Imljb24iOiJTa2lwRm9yd2FyZCIsImxhYmVsIjoiTmV4dCB0cmFjayIsInRvbmUiOiJuZXV0cmFsIiwiYWN0aW9uIjoibm9uZSJ9XX19fSwibSI6eyJleHBhbmQiOlswLjYsMC43XX0sInIiOjEsInQiOiJsaWdodCJ9",
+  "blank": "eyJ2IjoxLCJmIjoiYmxhbmsiLCJwIjp7InByb2dyZXNzIjowLjQyLCJ0aW1lciI6eyJtb2RlIjoiY291bnRkb3duIiwic2Vjb25kcyI6MzAwfSwiaWQiOiJjdXN0b20iLCJsYWJlbCI6IkN1c3RvbSBhY3Rpdml0eSIsImFjY2VudCI6ImJsdWUiLCJyZWdpb25zIjp7ImNvbXBhY3RMZWFkaW5nIjp7ImtpbmQiOiJnbHlwaCIsImljb24iOiJTcGFya2xlIn0sImNvbXBhY3RUcmFpbGluZyI6eyJraW5kIjoibm9uZSJ9LCJtaW5pbWFsIjp7ImtpbmQiOiJub25lIn0sImV4cGFuZGVkTGVhZGluZyI6eyJraW5kIjoibm9uZSJ9LCJleHBhbmRlZENlbnRlciI6eyJraW5kIjoibm9uZSJ9LCJleHBhbmRlZFRyYWlsaW5nIjp7ImtpbmQiOiJub25lIn0sImV4cGFuZGVkQm90dG9tIjp7ImtpbmQiOiJub25lIn19fSwicyI6bnVsbCwibSI6e30sInIiOjAsInQiOiJkYXJrIn0"
+ },
+ "builds": {
+  "upload": {
+   "from": "upload",
+   "primary": {
+    "progress": 0.7,
+    "timer": {
+     "mode": "countdown",
+     "seconds": 300
+    },
+    "id": "upload",
+    "label": "Résumé upload ✓",
+    "accent": "orange",
+    "regions": {
+     "compactLeading": {
+      "kind": "glyph",
+      "icon": "CloudArrowUp",
+      "tone": "accent"
+     },
+     "compactTrailing": {
+      "kind": "ring",
+      "icon": null
+     },
+     "minimal": {
+      "kind": "ring",
+      "icon": "ArrowUp"
+     },
+     "expandedLeading": {
+      "kind": "tile",
+      "icon": "CloudArrowUp"
+     },
+     "expandedCenter": {
+      "kind": "title",
+      "title": "launch-cut-v3.mov",
+      "subtitle": "To Team Drive",
+      "lines": 1,
+      "end": false
+     },
+     "expandedTrailing": {
+      "kind": "percent",
+      "caption": {
+       "text": "20 of 48 MB",
+       "press": null
+      }
+     },
+     "expandedBottom": {
+      "kind": "bar",
+      "caption": "",
+      "cancel": true
+     }
+    }
+   },
+   "second": null
+  },
+  "split": {
+   "from": "split",
+   "primary": {
+    "progress": 0.42,
+    "timer": {
+     "mode": "countdown",
+     "seconds": 272
+    },
+    "id": "timer",
+    "label": "Timer",
+    "accent": "orange",
+    "regions": {
+     "compactLeading": {
+      "kind": "glyph",
+      "icon": "Timer",
+      "tone": "accent"
+     },
+     "compactTrailing": {
+      "kind": "timer",
+      "format": "clock",
+      "caption": {
+       "text": "",
+       "press": null
+      },
+      "end": false,
+      "tone": "accent"
+     },
+     "minimal": {
+      "kind": "glyph",
+      "icon": "Timer",
+      "tone": "accent"
+     },
+     "expandedLeading": {
+      "kind": "buttons",
+      "buttons": [
+       {
+        "icon": "Pause",
+        "label": "Pause",
+        "tone": "tinted",
+        "action": "none"
+       },
+       {
+        "icon": "X",
+        "label": "Cancel",
+        "tone": "neutral",
+        "action": "dismiss"
+       }
+      ],
+      "call": false
+     },
+     "expandedCenter": {
+      "kind": "label",
+      "text": "Timer"
+     },
+     "expandedTrailing": {
+      "kind": "timer",
+      "format": "clock",
+      "caption": {
+       "text": "",
+       "press": null
+      },
+      "end": false,
+      "tone": "accent"
+     },
+     "expandedBottom": {
+      "kind": "none"
+     }
+    }
+   },
+   "second": {
+    "progress": 0.42,
+    "timer": {
+     "mode": "elapsed",
+     "seconds": 38
+    },
+    "id": "now-playing",
+    "label": "Saltwater Static by The Lagoon Club",
+    "accent": "art",
+    "regions": {
+     "compactLeading": {
+      "kind": "art",
+      "seed": "Saltwater Static The Lagoon Club",
+      "cover": false
+     },
+     "compactTrailing": {
+      "kind": "meter",
+      "compactBars": 4,
+      "player": false
+     },
+     "minimal": {
+      "kind": "none"
+     },
+     "expandedLeading": {
+      "kind": "art",
+      "seed": "Saltwater Static The Lagoon Club",
+      "cover": false
+     },
+     "expandedCenter": {
+      "kind": "title",
+      "title": "Saltwater Static",
+      "subtitle": "The Lagoon Club",
+      "lines": 1,
+      "end": false
+     },
+     "expandedTrailing": {
+      "kind": "meter",
+      "compactBars": 4,
+      "player": false
+     },
+     "expandedBottom": {
+      "kind": "scrubber",
+      "length": 214,
+      "buttons": [
+       {
+        "icon": "SkipBack",
+        "label": "Previous track",
+        "tone": "neutral",
+        "action": "none"
+       },
+       {
+        "icon": "Pause",
+        "label": "Pause",
+        "tone": "neutral",
+        "action": "none"
+       },
+       {
+        "icon": "SkipForward",
+        "label": "Next track",
+        "tone": "neutral",
+        "action": "none"
+       }
+      ]
+     }
+    }
+   }
+  },
+  "blank": {
+   "from": "blank",
+   "primary": {
+    "progress": 0.42,
+    "timer": {
+     "mode": "countdown",
+     "seconds": 300
+    },
+    "id": "custom",
+    "label": "Custom activity",
+    "accent": "blue",
+    "regions": {
+     "compactLeading": {
+      "kind": "glyph",
+      "icon": "Sparkle",
+      "tone": "accent"
+     },
+     "compactTrailing": {
+      "kind": "none"
+     },
+     "minimal": {
+      "kind": "none"
+     },
+     "expandedLeading": {
+      "kind": "none"
+     },
+     "expandedCenter": {
+      "kind": "none"
+     },
+     "expandedTrailing": {
+      "kind": "none"
+     },
+     "expandedBottom": {
+      "kind": "none"
+     }
+    }
+   },
+   "second": null
+  }
+ },
+ "springs": {
+  "split": {
+   "expand": [
+    0.6,
+    0.7
+   ]
+  }
+ },
+ "reduced": {
+  "split": true
+ },
+ "stage": {
+  "split": "light"
+ }
+}

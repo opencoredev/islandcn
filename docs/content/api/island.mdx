@@ -1,0 +1,138 @@
+---
+title: "Island"
+description: "Draws the activity stack from the nearest IslandProvider at the top centre of its container or of the window."
+---
+
+```tsx
+import { Island } from "@/lib/island";
+```
+
+## `<Island>`
+
+Renders the pill. Put one inside the provider; it shows whatever the stack holds.
+
+```tsx
+import { Island, IslandProvider } from "@/lib/island";
+
+import { App } from "./app";
+
+export const Root = () => (
+  <IslandProvider>
+    <Island placement="viewport" />
+    <App />
+  </IslandProvider>
+);
+```
+
+### Props
+
+```ts
+import type { CSSProperties } from "react";
+
+interface IslandProps {
+  placement?: "container" | "viewport";      // default "container"
+  label?: string;                            // region name, default "Live activities"
+  className?: string;
+  style?: CSSProperties;
+  keyline?: "auto" | "on" | "off";           // default "auto"
+  backdrop?: string;                         // page colour behind the island, sets keyline strength
+}
+```
+
+<TypeTable
+  type={{
+    "placement": { type: "\"container\" | \"viewport\"", default: "\"container\"", description: "\"container\" draws at the top centre of the nearest positioned ancestor, like a phone screen. \"viewport\" pins it to the top centre of the window." },
+    "label": { type: "string", default: "\"Live activities\"", description: "Name of the island region for screen readers." },
+    "className": { type: "string", description: "Class on the region element." },
+    "style": { type: "CSSProperties", description: "Style on the region element." },
+    "keyline": { type: "\"auto\" | \"on\" | \"off\"", default: "\"auto\"", description: "The thin grey band outside the edge that keeps the island visible on a dark page. \"auto\" draws it when backdrop is dark, or in dark mode when no backdrop is given. See Keyline." },
+    "backdrop": { type: "string", description: "The page colour behind the island, hex or rgb(). Its brightness sets the keyline's strength." },
+  }}
+/>
+
+### Size
+
+Sizes are CSS pixels, one per point on the reference phone. Containers wider than a phone clamp the island to phone width (402), so the expanded view is 374 wide everywhere and the pill never stretches across a desktop window.
+
+### Interaction and accessibility
+
+- The island is a `region` with the `label` above. The pill is a real `button` named after the activity, with `aria-expanded`. A polite live region reads activity labels when they change.
+- Every press swells the pill from touch-down. Still held at 0.1 s, it is a long-press and the island expands at `motion.longPress` (0.22 s after touch-down). Released sooner, it is a tap: the activity's `onPress` runs and the swell springs back. Hold the detached capsule to expand the second activity. See [Long-press and taps](/guides/actions).
+- Enter or Space toggles expanded. Escape, or a press outside the island, collapses it. Focus inside content that goes away moves back to the pill.
+- Expanded content takes pointer events and focus, so buttons inside it work.
+
+`<Island>` throws if it has no `IslandProvider` above it.
+
+## IslandView
+
+
+A controlled island: you say which presentation to show and what goes in it, and it springs there when either changes. It ignores the activity stack and isn't pressable, which makes it the right tool for a preview, a design tool or a frame-by-frame capture.
+
+```tsx
+import { TitleStack } from "@/components/islandcn/island-text";
+import { LinearProgress } from "@/components/islandcn/linear-progress";
+import { ProgressRing } from "@/components/islandcn/progress-ring";
+import { IslandView } from "@/lib/island";
+
+export const UploadPreview = () => (
+  <div style={{ position: "relative", height: 240 }}>
+    <IslandView
+      presentation={{
+        kind: "expanded",
+        leading: <ProgressRing value={0.62} size={44} />,
+        center: <TitleStack title="Uploading report.pdf" subtitle="3.1 of 5 MB" />,
+        bottom: <LinearProgress value={0.62} />,
+      }}
+    />
+  </div>
+);
+```
+
+### Props
+
+```ts
+import type { CSSProperties, ReactNode } from "react";
+
+import type { CompactContent, IslandClock, IslandMetricsOverrides, IslandMotionOverrides } from "@/lib/island";
+
+interface IslandViewProps {
+  presentation:
+    | { kind: "idle" }
+    | { kind: "compact"; leading?: ReactNode; trailing?: ReactNode }
+    | { kind: "minimal"; attached: ReactNode; detached?: ReactNode; split?: { attached: CompactContent; detached: CompactContent } }
+    | { kind: "expanded"; leading?: ReactNode; trailing?: ReactNode; center?: ReactNode; bottom?: ReactNode };
+  contentKey?: string;                       // new key crossfades, same key updates in place
+  pressed?: boolean;                         // the hold squish
+  placement?: "container" | "viewport";
+  label?: string;
+  liveLabel?: string;
+  clock?: IslandClock;
+  metrics?: IslandMetricsOverrides;
+  motion?: IslandMotionOverrides;
+  reducedMotion?: "user" | "always" | "never";
+  className?: string;
+  style?: CSSProperties;
+  keyline?: "auto" | "on" | "off";
+  backdrop?: string;
+}
+```
+
+<TypeTable
+  type={{
+    "presentation": { type: "IslandPresentation", required: true, description: "The shape and its content. minimal with split draws the split as the reference phone shows it: each shape shows its { leading, trailing } pair, the capsule at its fixed 62.18 width. attached and detached are the fallback views for content too wide for that, and the whole view when there is no split." },
+    "contentKey": { type: "string", default: "presentation.kind", description: "A new key crossfades the content; the same key updates it in place." },
+    "pressed": { type: "boolean", default: "false", description: "Draws the hold swell, as if a finger were on the pill." },
+    "placement": { type: "\"container\" | \"viewport\"", default: "\"container\"", description: "Same as on Island." },
+    "label": { type: "string", default: "\"Live activity\"", description: "Region name for screen readers." },
+    "liveLabel": { type: "string", description: "Text the polite live region reads." },
+    "clock": { type: "IslandClock", default: "the provider's, or a requestAnimationFrame clock", description: "Where time comes from." },
+    "metrics": { type: "IslandMetricsOverrides", default: "the provider's, or none", description: "Geometry overrides." },
+    "motion": { type: "IslandMotionOverrides", default: "the provider's, or none", description: "Spring overrides." },
+    "reducedMotion": { type: "\"user\" | \"always\" | \"never\"", default: "the provider's, or \"user\"", description: "Reduced-motion setting." },
+    "className, style": { type: "", description: "On the region element." },
+    "keyline": { type: "\"auto\" | \"on\" | \"off\"", default: "\"auto\"", description: "The thin grey band outside the edge that keeps the island visible on a dark page. \"auto\" draws it when backdrop is dark, or in dark mode when no backdrop is given. See Keyline." },
+    "backdrop": { type: "string", description: "The page colour behind the island, hex or rgb(). Its brightness sets the keyline's strength." },
+  }}
+/>
+
+`IslandView` works inside or outside a provider. Inside one, it uses the provider's clock, metrics and motion.

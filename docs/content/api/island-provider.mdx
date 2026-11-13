@@ -1,0 +1,80 @@
+---
+title: "IslandProvider"
+description: "Owns the activity stack and the clock for every Island and useIsland below it, and takes the metrics, motion and reduced-motion settings."
+---
+
+```tsx
+import { IslandProvider } from "@/lib/island";
+```
+
+## `<IslandProvider>`
+
+Wrap your app once, as high as the components that start activities. Everything below it shares one island.
+
+```tsx
+import { Island, IslandProvider } from "@/lib/island";
+
+import { App } from "./app";
+
+export const Root = () => (
+  <IslandProvider>
+    <Island placement="viewport" />
+    <App />
+  </IslandProvider>
+);
+```
+
+### Props
+
+```ts
+import type { ReactNode } from "react";
+
+import type { IslandClock, IslandMetricsOverrides, IslandMotionOverrides, IslandSequence } from "@/lib/island";
+
+interface IslandProviderProps {
+  children: ReactNode;
+  clock?: IslandClock;                       // read once; default requestAnimationFrame
+  devtools?: boolean | { sequences?: Record<string, IslandSequence> }; // default false
+  metrics?: IslandMetricsOverrides;          // deep-partial overrides of islandMetrics
+  motion?: IslandMotionOverrides;            // deep-partial overrides of islandMotion
+  reducedMotion?: "user" | "always" | "never"; // default "user"
+}
+```
+
+<TypeTable
+  type={{
+    "children": { type: "ReactNode", required: true, description: "Your app." },
+    "clock": { type: "IslandClock", default: "a requestAnimationFrame clock", description: "Where island time comes from. Read once, on mount. Pass a stepped clock for captures and tests." },
+    "devtools": { type: "boolean | { sequences }", default: "false", description: "Installs window.__islandcn (pause, step, seek, play) for frame-exact captures. Leave it off in production." },
+    "metrics": { type: "IslandMetricsOverrides", description: "Deep-partial overrides of islandMetrics, the geometry table." },
+    "motion": { type: "IslandMotionOverrides", description: "Deep-partial overrides of islandMotion, the spring and timing table." },
+    "reducedMotion": { type: "\"user\" | \"always\" | \"never\"", default: "\"user\"", description: "\"user\" follows prefers-reduced-motion; the others force it on or off." },
+  }}
+/>
+
+### Overriding springs and sizes
+
+Both tables merge one group at a time, so you pass only what you change:
+
+```tsx
+import { Island, IslandProvider } from "@/lib/island";
+
+import { App } from "./app";
+
+export const Root = () => (
+  <IslandProvider
+    motion={{ shape: { expand: { response: 0.42, dampingFraction: 0.78 } }, alertHold: 4 }}
+    metrics={{ top: 10 }}
+  >
+    <Island placement="viewport" />
+    <App />
+  </IslandProvider>
+);
+```
+
+`motion` can change while the island runs; the next transition uses the new springs. The [Playground]({{site}}/playground) writes this prop for you. The tables and every key are listed in [Motion and springs](/guides/motion).
+
+### Notes
+
+- It renders on the client. In the Next.js App Router, render it from a `"use client"` file, see [Installation](/installation).
+- One provider per island. Two providers draw two independent islands.

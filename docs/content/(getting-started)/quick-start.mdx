@@ -1,0 +1,79 @@
+---
+title: Quick start
+description: Start an activity from a button, update it while the task runs, and end it when the task is done.
+---
+
+You will build an upload button whose progress shows in the island. It takes about five minutes. You need the engine mounted first, see [Installation](/installation).
+
+<Steps>
+  <Step title="Install the content kit">
+
+The engine draws any React node. The content kit gives you text and glyphs sized to the pill, so the island looks right without tuning.
+
+```package-install
+npx shadcn@latest add {{registry}}/island-content.json
+```
+
+  </Step>
+  <Step title="Start an activity">
+
+`useIsland()` works in any component under the provider. `start` takes an `id`, a `label` for screen readers, and what to draw in each shape. It returns a handle.
+
+```tsx components/upload-button.tsx
+"use client";
+
+import { Glyph } from "@/components/islandcn/glyph";
+import { UploadGlyph } from "@/components/islandcn/glyphs";
+import { CompactText, ExpandedTitle } from "@/components/islandcn/island-text";
+import { useIsland } from "@/lib/island";
+
+export const UploadButton = () => {
+  const island = useIsland();
+
+  const upload = () => {
+    const activity = island.start({
+      id: "upload",
+      label: "Uploading photos.zip",
+      compact: { leading: <Glyph icon={UploadGlyph} />, trailing: <CompactText>0%</CompactText> },
+      expanded: { center: <ExpandedTitle>photos.zip</ExpandedTitle> },
+    });
+
+    let percent = 0;
+    const timer = window.setInterval(() => {
+      percent += 10;
+      activity.update({ compact: { trailing: <CompactText>{`${percent}%`}</CompactText> } });
+      if (percent >= 100) {
+        window.clearInterval(timer);
+        activity.end();
+      }
+    }, 400);
+  };
+
+  return <button onClick={upload}>Upload</button>;
+};
+```
+
+  </Step>
+  <Step title="Try it">
+
+Render `<UploadButton />` and press it. The pill grows into the compact shape, the percentage counts up, and the pill folds back to rest at 100%. Hold the pill to see the expanded view.
+
+  </Step>
+</Steps>
+
+## What just happened
+
+- `start` added the activity, so the island moved from idle to compact.
+- `update` changed only the trailing slot. Nested content merges, so the leading glyph stayed.
+- `end` removed it, and with nothing else running the island returned to idle.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Activities" icon="activity" href="/guides/activities">
+    The life of an activity, groups, and numbers that animate.
+  </Card>
+  <Card title="Presets" icon="layout-grid" href="/presets">
+    Nine finished islands to install or read for technique.
+  </Card>
+</CardGroup>

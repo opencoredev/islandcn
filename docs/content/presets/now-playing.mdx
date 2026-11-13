@@ -1,0 +1,82 @@
+---
+title: "Now playing"
+description: "Artwork on the leading side, a live level meter on the trailing side, transport controls when expanded."
+---
+
+![The Now playing preset, expanded, at real size.](/presets/now-playing.png)
+
+Music or a podcast. Without artwork it draws a gradient cover from the title and artist and takes its accent from it, so every track looks distinct.
+
+## Install
+
+```package-install
+npx shadcn@latest add {{registry}}/now-playing-activity.json
+```
+
+This writes `components/islandcn/now-playing-activity.tsx`, plus the content kit and the engine if the project lacks them. Mount the island once first, see [Installation](/installation).
+
+## What it shows
+
+- **Compact:** the cover on the leading side and a moving six-bar level meter, tinted from the cover, on the trailing side.
+- **Split:** its compact pair, as the reference phone shows it, in the pill or in the 62.18 wide capsule. When the pair is too wide for the split, the fallback is the cover and a smaller meter.
+- **Expanded:** a 60 pt cover with the title (semibold, white) and artist (grey, the same 16 pt) beside it, the level meter in the top corner, a 6 pt white scrubber on a grey track between the elapsed and remaining times, and a transport row: previous, a large play or pause, and next centred on the island, and an audio output button (a speaker with sound waves) at the trailing end. Each button shows when you pass its handler.
+- **Updates:** the elapsed and remaining times turn over their digits with the engine's `IslandNumber`, and the scrubber moves with `IslandProgress`.
+
+## Usage
+
+```tsx components/player-island.tsx
+"use client";
+
+import { NowPlayingActivity, type PlaybackState } from "@/components/islandcn/now-playing-activity";
+
+interface Track {
+  title: string;
+  artist: string;
+  durationMs: number;
+  coverUrl: string;
+}
+
+interface PlayerIslandProps {
+  track: Track;
+  playback: PlaybackState;
+  toggle: () => void;
+  next: () => void;
+}
+
+export const PlayerIsland = ({ track, playback, toggle, next }: PlayerIslandProps) => (
+  <NowPlayingActivity
+    title={track.title}
+    artist={track.artist}
+    duration={track.durationMs}
+    artwork={track.coverUrl}
+    playback={playback}
+    onToggle={toggle}
+    onNext={next}
+  />
+);
+```
+
+`playback` is `{ kind: "playing", startedAt }` (the epoch ms the track would have started at to be where it is now) or `{ kind: "paused", position }` in ms. The scrubber moves on its own while playing.
+
+## Props
+
+<TypeTable
+  type={{
+    "title": { type: "string", required: true, description: "Track title." },
+    "artist": { type: "string", required: true, description: "Artist." },
+    "duration": { type: "number", required: true, description: "Track length in ms." },
+    "playback": { type: "{ kind: \"playing\"; startedAt: number } | { kind: \"paused\"; position: number }", required: true, description: "Where playback is." },
+    "artwork": { type: "string", default: "a generated gradient", description: "Cover image URL." },
+    "accent": { type: "string", default: "taken from the generated art", description: "Accent for the level meter." },
+    "onToggle": { type: "() => void", description: "Play or pause button." },
+    "onPrevious": { type: "() => void", description: "Previous track button." },
+    "onNext": { type: "() => void", description: "Next track button." },
+    "onOutput": { type: "() => void", description: "Audio output button at the end of the transport row, to pick where the sound plays." },
+    "id": { type: "string", default: "\"now-playing\"", description: "Activity id." },
+    "priority": { type: "number", default: "0", description: "Higher priority takes the main pill when two activities run." },
+  }}
+/>
+
+## Make it yours
+
+Install this preset when it is exactly what you need. Otherwise open it in the [Playground]({{site}}/playground), change what each region shows and copy the code, or read its source for technique and build your own island on the engine.

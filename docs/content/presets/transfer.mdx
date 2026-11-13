@@ -1,0 +1,68 @@
+---
+title: "Nearby transfer"
+description: "A photo or file going to a device nearby, or coming from it: who it goes to, the photo on its corner, and a ring with a stop button."
+---
+
+![The Nearby transfer preset, expanded, at real size.](/presets/transfer.png)
+
+Sending to, or receiving from, a device nearby, laid out as a nearby share's banner: who it goes to, what is going (the photo, on the device's corner), and a ring with a stop button. It reads differently from the upload on purpose: the upload leads with the photo, this leads with the other device.
+
+## Install
+
+```package-install
+npx shadcn@latest add {{registry}}/nearby-transfer-activity.json
+```
+
+This writes `components/islandcn/nearby-transfer-activity.tsx` and `media-row.tsx` (the row, the ring and the device picture it shares with the upload), plus the content kit and the engine if the project lacks them. Mount the island once first, see [Installation](/installation).
+
+## What it shows
+
+- **Compact:** the device's glyph in the accent on the leading side and a ring that fills on the trailing side, with a check at 100%.
+- **Split:** its compact pair, which fits whole in the 62.18 wide capsule. When the split doesn't fit at all, the fallback is the device glyph inside the ring.
+- **Expanded:** one row, as tall as an incoming call. The device on a faint disc of the accent, with a thumbnail of what is being sent on its lower corner, then "Sending biscuit-in-the-sun.jpg" in grey over "To Maya's Laptop" in white, and the ring large on the trailing side. With `onCancel` the ring holds a stop square that calls it; without, an arrow for the direction. Done, the grey line reads "Sent …" and the ring is a check.
+- **Receiving:** `direction="receive"` reads "Receiving …" over "From Maya's Laptop", with the arrow pointing down when there is no stop button.
+- **A person instead of a device:** pass `avatar` with their photo and it takes the device's place, in compact too.
+
+## Usage
+
+```tsx components/share-island.tsx
+"use client";
+
+import { NearbyTransferActivity } from "@/components/islandcn/nearby-transfer-activity";
+
+export const ShareIsland = ({ progress, cancel }: { progress: number; cancel: () => void }) => (
+  <NearbyTransferActivity
+    direction="send"
+    deviceName="Maya's Laptop"
+    device="laptop"
+    itemName="biscuit-in-the-sun.jpg"
+    src="/photos/biscuit-in-the-sun.jpg"
+    progress={progress}
+    onCancel={cancel}
+  />
+);
+```
+
+`itemName` can be a count as well as a name: "3 photos" reads "Sending 3 photos".
+
+## Props
+
+<TypeTable
+  type={{
+    "deviceName": { type: "string", required: true, description: "The other device's or person's name, such as \"Maya's Laptop\"." },
+    "itemName": { type: "string", required: true, description: "What is moving, such as \"biscuit-in-the-sun.jpg\" or \"3 photos\", in the grey line (\"Sending 3 photos\")." },
+    "progress": { type: "number", required: true, description: "0 to 1. At 1 it shows a check and \"Sent\" or \"Received\"." },
+    "src": { type: "string", description: "A thumbnail of what is moving, set on the device's corner. Without it, no badge." },
+    "avatar": { type: "string", description: "The other person's photo, in place of the device." },
+    "direction": { type: "\"send\" | \"receive\"", default: "\"send\"", description: "Sending or receiving." },
+    "device": { type: "\"phone\" | \"tablet\" | \"laptop\" | \"desktop\"", default: "\"phone\"", description: "Picks the glyph when there is no avatar." },
+    "accent": { type: "string", default: "blue", description: "Colour of the device, the ring and the check." },
+    "onCancel": { type: "() => void", description: "Makes the expanded ring a stop button while it runs. Without it the ring shows an arrow for the direction." },
+    "id": { type: "string", default: "\"nearby-transfer\"", description: "Activity id." },
+    "priority": { type: "number", default: "0", description: "Higher priority takes the main pill when two activities run." },
+  }}
+/>
+
+## Make it yours
+
+Install this preset when it is exactly what you need. Otherwise open it in the [Playground]({{site}}/playground), change what each region shows and copy the code, or read its source for technique and build your own island on the engine.

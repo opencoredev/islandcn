@@ -1,0 +1,58 @@
+---
+title: "How it's measured"
+description: "islandcn's sizes and springs come from simulator recordings of the reference phone, compared with the web version frame by frame."
+---
+
+islandcn aims to match the reference phone's island closely enough that you can't tell them apart at normal speed. That needs ground truth, not guesses from screenshots.
+
+## The reference
+
+Ground truth comes from simulator recordings of the reference phone: a 402 by 874 pt screen with the sensor housing at its top. A small sample app starts a live status activity whose content is plain shapes, system-font text and solid colours, so the web can draw exactly the same thing. No system symbol fonts and no platform artwork go into the sample or into islandcn.
+
+The sample is recorded through the same sequences the engine has to get right:
+
+| Sequence | What happens |
+| --- | --- |
+| `appear` | An activity starts: idle to compact |
+| `expand` | A long-press: compact to expanded |
+| `collapse` | Expanded back to compact |
+| `split` | A second activity starts: compact to minimal plus a detached bubble |
+| `unsplit` | The second activity ends |
+| `alert` | An alerting update opens the expanded view briefly |
+| `dismiss` | The activity ends: back to idle |
+
+From the recordings come the numbers the engine uses: pill sizes in each state, corner radii, the gap from the top of the screen, padding, type sizes, and the response and damping of each spring, read frame by frame. They live in `reference/MEASUREMENTS.md` in the repository and in one constants table in the engine.
+
+## The numbers
+
+From the simulator at 3x, in points:
+
+| State | Width | Height | From the top | Corner |
+| --- | --- | --- | --- | --- |
+| Idle | 94.85 | 36.84 | 13.91 | capsule |
+| Compact (22 pt glyph and "42") | 150.18 | 36.85 | 13.91 | capsule |
+| Held, just before it expands | 168.34 | 41.29 | 11.70 | capsule |
+| Expanded | 374.34 | 104.52 for that content | 13.83 | 48.2, continuous |
+| Split: attached pill and capsule | 156.85 and 62.18, 7.82 apart | 36.85 | 13.91 | capsules |
+
+Every corner is continuous: a circular arc that eases into the straight edges (smoothing 0.72 fits the frames in every state at under 0.1 pt). Compact grows outward from the idle box, so it sits a little off centre when its two sides differ, within the balance rule in [Layout rules](/guides/presentations#layout-rules). Expanded is 13.83 from both sides and the top, which makes it concentric with the screen corner. Only the expanded state casts a shadow, and the pill's outline stays sharp through every morph: only the content blurs.
+
+The springs fitted to the same recordings are in [Motion and springs](/guides/motion).
+
+## Held-out content
+
+Rules fitted to one set of content can be fits to that content rather than rules. So a second set of recordings, with different content, was kept back and only used to test the engine. The rules it forced are the ones that hold for both sets with one set of numbers: the compact balance (0.7475), the split capsule's fixed 62.18 width with its cut trailing value, the top-aligned expanded row, and how [groups](/guides/activities#groups) hand the island over.
+
+## The comparison loop
+
+1. The engine replays each sequence on a deterministic stage (`/lab`) with the same content and event times as the recording.
+2. A capture script steps the engine's clock at the recording's frame rate and screenshots every frame at the simulator's pixel scale. Text has to render in the same font, so the web side is captured on a Mac.
+3. A comparison page shows the reference and the web side by side, with a scrubber and a frame difference.
+4. An independent reviewer gets the frames and videos and lists the visible differences, ranked: shape, corners, size, timing, overshoot, blur and crossfade, the split, text.
+5. The differences that hold up get fixed, and the loop runs again.
+
+It counts as done when, for every sequence, the reviewer can no longer point to a visible difference at normal speed, and a blind A/B ("one of these is a website") doesn't pick the web version reliably, at 60 fps on desktop and at phone width.
+
+## What this means for you
+
+The defaults are tuned. Change sizes or springs when your design calls for it, but the defaults are the closest match to the phone.

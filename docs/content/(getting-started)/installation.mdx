@@ -1,0 +1,114 @@
+---
+title: Installation
+description: Add the islandcn engine to a React project with the shadcn CLI and mount the island once.
+---
+
+By the end of this page your app renders a black pill at the top centre of the window, ready for activities.
+
+You need React 19 and a project set up for shadcn (a `components.json` at the root). If you don't have one, run `npx shadcn@latest init` first.
+
+<Steps>
+  <Step title="Install the engine">
+
+```package-install
+npx shadcn@latest add {{registry}}/island-core.json
+```
+
+This writes the engine to `lib/island/`, under your `lib` alias. It adds no npm packages.
+
+  </Step>
+  <Step title="Mount the provider and the island">
+
+Render `IslandProvider` once, high in the tree, and `Island` once inside it. `placement="viewport"` pins the pill to the top centre of the window. Without it, the pill draws at the top of its nearest positioned parent, which is what you want inside a phone mockup.
+
+<Tabs>
+  <Tab title="Next.js">
+
+`IslandProvider` holds state, so it renders on the client. Put it in a client file and use that file from the root layout.
+
+```tsx app/providers.tsx
+"use client";
+
+import type { ReactNode } from "react";
+
+import { Island, IslandProvider } from "@/lib/island";
+
+export const Providers = ({ children }: { children: ReactNode }) => (
+  <IslandProvider>
+    <Island placement="viewport" />
+    {children}
+  </IslandProvider>
+);
+```
+
+```tsx app/layout.tsx
+import type { ReactNode } from "react";
+
+import { Providers } from "./providers";
+
+const RootLayout = ({ children }: { children: ReactNode }) => (
+  <html lang="en">
+    <body>
+      <Providers>{children}</Providers>
+    </body>
+  </html>
+);
+
+export default RootLayout;
+```
+
+  </Tab>
+  <Tab title="Vite">
+
+Wrap the root once in `main.tsx`. The shadcn CLI needs the `@` path alias in `tsconfig.json` and `vite.config.ts`; `npx shadcn@latest init` tells you if it is missing.
+
+```tsx src/main.tsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+
+import { Island, IslandProvider } from "@/lib/island";
+
+import { App } from "./app";
+
+const root = document.getElementById("root");
+
+if (root) {
+  createRoot(root).render(
+    <StrictMode>
+      <IslandProvider>
+        <Island placement="viewport" />
+        <App />
+      </IslandProvider>
+    </StrictMode>,
+  );
+}
+```
+
+  </Tab>
+</Tabs>
+
+  </Step>
+  <Step title="Check it">
+
+Reload the page. A black pill sits at the top centre. It does nothing yet: it waits for an activity.
+
+  </Step>
+</Steps>
+
+## Add a preset
+
+Each preset is its own registry item and names it on its page. The first one you add also installs `island-content`, the kit the presets share. For example, the timer:
+
+```package-install
+npx shadcn@latest add {{registry}}/timer-activity.json
+```
+
+:::tip
+Coding agent? Install the [islandcn agent skill](/agent-skill) and it will wire an activity to your app's state for you.
+:::
+
+## Done when
+
+- `lib/island/index.ts` exists.
+- The page shows a black pill at the top centre when no activity runs.
+- Starting an activity grows the pill, and ending it returns the pill to rest. The [quick start](/quick-start) does exactly that.

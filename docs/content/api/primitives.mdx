@@ -1,0 +1,86 @@
+---
+title: "IslandNumber and IslandProgress"
+description: "Content primitives that animate a changed number or a moving bar on the island's clock, as a live status activity's content does."
+---
+
+```tsx
+import { IslandNumber, IslandProgress, numberMotion } from "@/lib/island";
+```
+
+Both run on the island's clock, so captures and stepped clocks see the same frames, and both follow the provider's reduced-motion setting. Use them inside activity content; outside a provider they use a `requestAnimationFrame` clock and the system's setting. When to use them rather than a crossfade is in [Numbers and progress](/guides/activities#numbers-and-progress).
+
+## `<IslandNumber>`
+
+Text whose changed characters turn over with a blur when `value` changes.
+
+```tsx
+import { IslandNumber } from "@/lib/island";
+
+export const Percent = ({ percent }: { percent: number }) => (
+  <IslandNumber value={`${percent}%`} style={{ fontSize: 34, fontWeight: 700, color: "#0a84ff" }} />
+);
+```
+
+```ts
+import type { CSSProperties } from "react";
+
+interface IslandNumberProps {
+  value: number | string;
+  className?: string;
+  style?: CSSProperties;
+}
+```
+
+<TypeTable
+  type={{
+    "value": { type: "number | string", required: true, description: "The value. Numbers render with toString(); pass a string such as \"4:07\" to format it yourself." },
+    "className": { type: "string", description: "Class on the wrapper." },
+    "style": { type: "CSSProperties", description: "Style on the wrapper: font size, weight, colour." },
+  }}
+/>
+
+The old and new text are aligned from the right, and only the characters that changed move. Use tabular figures (`fontVariantNumeric: "tabular-nums"`) so the width holds still. The wrapper is an `inline-flex` with an `aria-label` of the whole text; screen readers read the value once, not per digit. Because it is not plain text, a slot too narrow for it clips it rather than ending it in an ellipsis.
+
+`numberMotion` holds the timing, measured on the simulator: the old character shrinks to 0.7 and blurs from 0.03 to 0.21 s, then fades out by 0.26 s; the new one starts at 0.2 s, fades in within 0.08 s, grows from 0.72 and is sharp by about 0.48 s. Under reduced motion the text changes with a plain fade.
+
+## `<IslandProgress>`
+
+A capsule bar whose fill springs to each new value.
+
+```tsx
+import { IslandProgress } from "@/lib/island";
+
+export const Charge = ({ level }: { level: number }) => <IslandProgress value={level} color="#30D158" track="#414141" height={8} />;
+```
+
+```ts
+import type { CSSProperties } from "react";
+
+import type { SpringConfig } from "@/lib/island";
+
+interface IslandProgressProps {
+  value: number;
+  color?: string;
+  track?: string;
+  height?: number;
+  radius?: number;
+  spring?: SpringConfig;
+  className?: string;
+  style?: CSSProperties;
+}
+```
+
+<TypeTable
+  type={{
+    "value": { type: "number", required: true, description: "Fill from 0 to 1." },
+    "color": { type: "string", default: "\"#30D158\"", description: "Fill colour." },
+    "track": { type: "string", default: "\"#414141\"", description: "Track colour." },
+    "height": { type: "number", default: "8", description: "Bar height in px." },
+    "radius": { type: "number", default: "half the height", description: "Corner radius in px." },
+    "spring": { type: "{ response, dampingFraction }", default: "{ response: 0.97, dampingFraction: 0.74 }", description: "How the fill moves to a new value, fitted on the simulator's bar." },
+    "className": { type: "string", description: "Class on the track." },
+    "style": { type: "CSSProperties", description: "Style on the track." },
+  }}
+/>
+
+The track is a `progressbar` with `aria-valuenow` from 0 to 100. If you wrap it in your own labelled progress bar, hide this one with `aria-hidden`, as the content kit's `LinearProgress` does. Under reduced motion the fill eases to the new value over 0.2 s with no overshoot.

@@ -1,0 +1,91 @@
+---
+title: Motion and reduced motion
+description: How the island's springs work, how to change them, and what changes when the user asks for reduced motion.
+sidebar:
+  label: Motion
+---
+
+Read this when you want to tune how the island moves, or check that it behaves when motion is reduced. The defaults are fitted to recordings of the reference phone, so most apps never change them.
+
+## Response and damping
+
+Springs take two numbers, the ones native spring animations use:
+
+- `response`: how long one swing takes, in seconds. Smaller is faster.
+- `dampingFraction`: how quickly it settles. `1` settles without overshoot; below `1` it overshoots a little first.
+
+A spring that is interrupted, say a collapse during an expand, starts the new spring from the current value and speed, so fast gestures never snap.
+
+## One spring per transition
+
+Each presentation change picks a transition, and each transition has its own springs: `appear`, `expand`, `pressExpand` (out of a long-press swell), `appearExpand` (idle straight to expanded), `swap` (to another activity's expanded view), `collapse`, `collapseSplit` (expanded back into the split), `split`, `unsplit`, `dismiss` and `resize` (content changed size in place). The detached capsule has its own springs, so it pinches off and settles. Morphs that change which content shows pass through the idle shape: the edges aim at idle, then retarget.
+
+What the simulator does, fitted frame by frame ([How it's measured](/how-its-measured)). The numbers are the edge springs, `response` / `dampingFraction`:
+
+| Transition | Edges | What you see |
+| --- | --- | --- |
+| appear | 0.483 / 0.62 | Idle to compact overshoots 8 to 11% |
+| expand | 0.517 / 0.824 | An alert or `expand()`; height on 0.497 / 0.825 |
+| pressExpand | 0.387 / 0.792 | Faster, and starts from the held swell and its speed |
+| collapse | 0.479 / 0.894, then 0.46 / 0.555 | The waist pulls in to about 105 wide and bounces back; height settles on 0.453 / 0.928 |
+| dismiss | 0.442 / 0.97 | To idle, no visible overshoot |
+| split | 0.505 / 0.815 | Through idle (retarget at 0.215 s); the capsule pinches off at about 0.53 s |
+| unsplit | 0.5 / 0.74 | The capsule slides left under the sensor and is gone by 0.19 s |
+
+The engine's defaults live in `islandMotion` (`lib/island/motion.ts`), and each value there names the recording it was fitted on.
+
+## Changing them
+
+Pass deep-partial overrides to the provider:
+
+```tsx
+import { Island, IslandProvider } from "@/lib/island";
+
+import { App } from "./app";
+
+export const Root = () => (
+  <IslandProvider motion={{ shape: { appear: { response: 0.4, dampingFraction: 0.7 } } }}>
+    <Island placement="viewport" />
+    <App />
+  </IslandProvider>
+);
+```
+
+The [Playground]({{site}}/playground) lets you tune each transition by eye, plays it, and copies the prop for you.
+
+## Content
+
+Content follows the shape. While the island morphs, each slot keeps its place as a fraction of the current shape and scales with it, so a compact circle grows and slides toward the expanded tile as the island opens, and content is never cut by the outline while it is still sharp.
+
+On top of that, the outgoing and incoming layers crossfade with a blur, a scale and a fade, timed per transition (`motion.contentTiming`). They overlap, so the island never shows an empty black moment. The sensor housing is drawn above the content and never moves; content that slides under it is hidden there. The outline itself never blurs.
+
+Content that changes in place, such as a percentage, doesn't crossfade at all. See [Numbers and progress](/guides/activities#numbers-and-progress).
+
+## Deterministic time
+
+The engine reads time from a clock you can replace. On a normal page it runs on `requestAnimationFrame`. For captures and tests, pass a clock you step by hand, or turn on `devtools`, and every frame comes out the same on every run.
+
+## No animation library
+
+The springs are solved in closed form in `lib/island/spring.ts`, and frames write the SVG path and transforms directly without re-rendering React. Installing the engine adds no dependency.
+
+## Reduced motion
+
+When the user's system asks for reduced motion (`prefers-reduced-motion: reduce`), the island keeps changing shape, because the shape carries meaning, but it stops bouncing. The shape eases over 0.2 s with no overshoot, and content crossfades with no blur or scale.
+
+Nothing else changes: activities, alerts, long-press, groups and the split all work the same. The engine reads the setting itself. `IslandNumber` changes its text with a plain fade and `IslandProgress` eases its fill over 0.2 s.
+
+Your own content can ask too. `useIslandReducedMotion()` returns whether the island runs reduced motion, the provider's setting resolved against the system's:
+
+```tsx
+import { useIslandReducedMotion } from "@/lib/island";
+
+const Pulse = () => {
+  const reduced = useIslandReducedMotion();
+  return <span className={reduced ? undefined : "pulse"} />;
+};
+```
+
+To force it either way, set the provider's `reducedMotion` to `"always"` or `"never"`; the default `"user"` follows the system. The [Playground]({{site}}/playground) has the same switch on its stage.
+
+When you check an island, check it once with reduced motion on. In Chrome DevTools, open the Rendering panel and set "Emulate CSS media feature prefers-reduced-motion" to `reduce`.

@@ -1,0 +1,553 @@
+[
+  {
+    "name": "island-content",
+    "type": "registry:component",
+    "title": "Island content kit",
+    "description": "Shared look for island content: colours, type sizes, compact and expanded text styles, the glyph set (Hugeicons' free icons drawn at the island's weight, solid where system glyphs are, and glyphFrom to make more), the expanded view's safe area (bottom rows and buttons that stay concentric with the island's corners), and useActivity, which binds an activity to a component's lifetime.",
+    "dependencies": [
+      "@hugeicons/core-free-icons@^4.4.0",
+      "@hugeicons/react@^1.1.10"
+    ],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/theme.ts",
+        "type": "registry:component",
+        "target": "components/islandcn/theme.ts"
+      },
+      {
+        "path": "components/islandcn/island-style.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/island-style.tsx"
+      },
+      {
+        "path": "components/islandcn/island-text.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/island-text.tsx"
+      },
+      {
+        "path": "components/islandcn/steady-number.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/steady-number.tsx"
+      },
+      {
+        "path": "components/islandcn/glyph.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/glyph.tsx"
+      },
+      {
+        "path": "components/islandcn/glyphs.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/glyphs.tsx"
+      },
+      {
+        "path": "components/islandcn/island-layout.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/island-layout.tsx"
+      },
+      {
+        "path": "components/islandcn/use-activity.ts",
+        "type": "registry:component",
+        "target": "components/islandcn/use-activity.ts"
+      }
+    ]
+  },
+  {
+    "name": "progress-ring",
+    "type": "registry:component",
+    "title": "Progress ring",
+    "description": "A circular progress ring with round caps for compact and expanded island content.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/progress-ring.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/progress-ring.tsx"
+      }
+    ]
+  },
+  {
+    "name": "linear-progress",
+    "type": "registry:component",
+    "title": "Linear progress",
+    "description": "A capsule progress bar whose fill slides on the compositor.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/linear-progress.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/linear-progress.tsx"
+      }
+    ]
+  },
+  {
+    "name": "level-meter",
+    "type": "registry:component",
+    "title": "Level meter",
+    "description": "Animated audio level bars for music and recording, or bars that follow live levels.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/level-meter.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/level-meter.tsx"
+      }
+    ]
+  },
+  {
+    "name": "ticking-time",
+    "type": "registry:component",
+    "title": "Ticking time",
+    "description": "Elapsed, remaining or fixed time that ticks by writing its own text node, so a running clock never re-renders the island.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/ticking-time.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/ticking-time.tsx"
+      }
+    ]
+  },
+  {
+    "name": "artwork",
+    "type": "registry:component",
+    "title": "Artwork",
+    "description": "Abstract album covers generated from a seed (curated palettes, four compositions, light and grain), or your own image over one.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/artwork.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/artwork.tsx"
+      }
+    ]
+  },
+  {
+    "name": "avatar",
+    "type": "registry:component",
+    "title": "Avatar",
+    "description": "A round avatar: your photo, or a contact-style monogram (white initials on a soft grey) with a silhouette for numbers.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/avatar.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/avatar.tsx"
+      }
+    ]
+  },
+  {
+    "name": "island-button",
+    "type": "registry:component",
+    "title": "Island buttons",
+    "description": "Capsule and round buttons for the expanded island (Approve and Deny, Accept and Decline), with press, hover and focus states.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/island-button.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/island-button.tsx"
+      }
+    ]
+  },
+  {
+    "name": "shimmer-text",
+    "type": "registry:component",
+    "title": "Shimmer text",
+    "description": "A label with a light sweeping across it, for thinking and other open-ended waits.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/shimmer-text.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/shimmer-text.tsx"
+      }
+    ]
+  },
+  {
+    "name": "spinner",
+    "type": "registry:component",
+    "title": "Spinner",
+    "description": "A small spinning arc for working states.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/spinner.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/spinner.tsx"
+      }
+    ]
+  },
+  {
+    "name": "sparkline",
+    "type": "registry:component",
+    "title": "Sparkline",
+    "description": "A line of recent values (a price, a heart rate, a queue), sized for a compact slot or stretched across the expanded view, with an optional wash, reference line and end dot.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/sparkline.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/sparkline.tsx"
+      }
+    ]
+  },
+  {
+    "name": "step-progress",
+    "type": "registry:component",
+    "title": "Step progress",
+    "description": "Progress through named stages or counted rounds: one segment per step, or dots with the active one drawn long. stepsAt builds the usual run.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/step-progress.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/step-progress.tsx"
+      }
+    ]
+  },
+  {
+    "name": "countdown-ring",
+    "type": "registry:component",
+    "title": "Countdown ring",
+    "description": "A ring that runs down to a moment on its own, for a code that expires, a focus session or a hold that times out. Only the ring re-renders.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json",
+      "{{REGISTRY_URL}}/progress-ring.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/countdown-ring.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/countdown-ring.tsx"
+      }
+    ]
+  },
+  {
+    "name": "metric",
+    "type": "registry:component",
+    "title": "Metric",
+    "description": "A labelled reading (grey caption over a 20 pt value and unit), and MetricRow, which sets two to four across the expanded view.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/metric.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/metric.tsx"
+      }
+    ]
+  },
+  {
+    "name": "tail-text",
+    "type": "registry:component",
+    "title": "Tail text",
+    "description": "One line that grows at its end and keeps the newest words in view under a soft fade, for a live transcript, a translation or an agent's output.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/tail-text.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/tail-text.tsx"
+      }
+    ]
+  },
+  {
+    "name": "media-row",
+    "type": "registry:component",
+    "title": "Media row",
+    "description": "What a sharing activity is made of: a photo thumbnail with a glyph fallback, the one-row expanded view (a picture, a grey line over a white sentence, a large ring), a ring that holds the percentage, a stop square or an arrow and turns into a check at 100%, and a device disc with a photo badge.",
+    "dependencies": [
+      "@hugeicons/core-free-icons@^4.4.0",
+      "@hugeicons/react@^1.1.10"
+    ],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/avatar.json",
+      "{{REGISTRY_URL}}/island-button.json",
+      "{{REGISTRY_URL}}/island-content.json",
+      "{{REGISTRY_URL}}/progress-ring.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/media-row.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/media-row.tsx"
+      }
+    ]
+  },
+  {
+    "name": "upload-activity",
+    "type": "registry:component",
+    "title": "Upload",
+    "description": "A photo or file upload, as a posting app shows one: the thumbnail and a ring with the percentage in compact, and when expanded the thumbnail large, the file and its size over where it goes, and the ring, which turns into a check when it's done.",
+    "dependencies": [
+      "@hugeicons/core-free-icons@^4.4.0",
+      "@hugeicons/react@^1.1.10"
+    ],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json",
+      "{{REGISTRY_URL}}/media-row.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/upload-activity.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/upload-activity.tsx"
+      }
+    ]
+  },
+  {
+    "name": "timer-activity",
+    "type": "registry:component",
+    "title": "Timer",
+    "description": "A countdown with the time left in compact, a draining ring in the split, and pause and cancel when expanded.",
+    "dependencies": [
+      "@hugeicons/core-free-icons@^4.4.0",
+      "@hugeicons/react@^1.1.10"
+    ],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-button.json",
+      "{{REGISTRY_URL}}/island-content.json",
+      "{{REGISTRY_URL}}/progress-ring.json",
+      "{{REGISTRY_URL}}/ticking-time.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/timer-activity.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/timer-activity.tsx"
+      }
+    ]
+  },
+  {
+    "name": "now-playing-activity",
+    "type": "registry:component",
+    "title": "Now playing",
+    "description": "Album art and a tinted level meter in compact; title, artist, scrubber and transport controls when expanded.",
+    "dependencies": [
+      "@hugeicons/core-free-icons@^4.4.0",
+      "@hugeicons/react@^1.1.10"
+    ],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/artwork.json",
+      "{{REGISTRY_URL}}/island-button.json",
+      "{{REGISTRY_URL}}/island-content.json",
+      "{{REGISTRY_URL}}/level-meter.json",
+      "{{REGISTRY_URL}}/linear-progress.json",
+      "{{REGISTRY_URL}}/ticking-time.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/now-playing-activity.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/now-playing-activity.tsx"
+      }
+    ]
+  },
+  {
+    "name": "call-activity",
+    "type": "registry:component",
+    "title": "Incoming call",
+    "description": "A ringing call that expands with the caller's photo, Decline and Accept, then settles to a green call timer.",
+    "dependencies": [
+      "@hugeicons/core-free-icons@^4.4.0",
+      "@hugeicons/react@^1.1.10"
+    ],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/avatar.json",
+      "{{REGISTRY_URL}}/island-button.json",
+      "{{REGISTRY_URL}}/island-content.json",
+      "{{REGISTRY_URL}}/level-meter.json",
+      "{{REGISTRY_URL}}/ticking-time.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/call-activity.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/call-activity.tsx"
+      }
+    ]
+  },
+  {
+    "name": "eta-activity",
+    "type": "registry:component",
+    "title": "Ride or delivery ETA",
+    "description": "Minutes to arrival counting down, with the vehicle large in the corner, the driver top right, the minutes in the accent and an optional Message capsule.",
+    "dependencies": [
+      "@hugeicons/core-free-icons@^4.4.0",
+      "@hugeicons/react@^1.1.10"
+    ],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json",
+      "{{REGISTRY_URL}}/ticking-time.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/eta-activity.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/eta-activity.tsx"
+      }
+    ]
+  },
+  {
+    "name": "recording-activity",
+    "type": "registry:component",
+    "title": "Recording",
+    "description": "A red waveform and elapsed time; expanded, one row of a scrolling waveform, the time and a ringed stop button.",
+    "dependencies": [
+      "@hugeicons/core-free-icons@^4.4.0",
+      "@hugeicons/react@^1.1.10"
+    ],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-button.json",
+      "{{REGISTRY_URL}}/island-content.json",
+      "{{REGISTRY_URL}}/level-meter.json",
+      "{{REGISTRY_URL}}/ticking-time.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/recording-activity.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/recording-activity.tsx"
+      }
+    ]
+  },
+  {
+    "name": "nearby-transfer-activity",
+    "type": "registry:component",
+    "title": "Nearby transfer",
+    "description": "A transfer to or from a device nearby, as a nearby share shows one: the device and a ring in compact, and when expanded the device with the photo being sent on its corner, \"Sending …\" over who it goes to, and a ring with a stop button or an arrow.",
+    "dependencies": [
+      "@hugeicons/core-free-icons@^4.4.0",
+      "@hugeicons/react@^1.1.10"
+    ],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json",
+      "{{REGISTRY_URL}}/media-row.json",
+      "{{REGISTRY_URL}}/progress-ring.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/nearby-transfer-activity.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/nearby-transfer-activity.tsx"
+      }
+    ]
+  },
+  {
+    "name": "battery-activity",
+    "type": "registry:component",
+    "title": "Battery",
+    "description": "The charging pill: the state in white, the percentage and a drawn battery in green that fills in as it appears; it can show for a moment on plug-in and go, as the system's does. Expanded adds one grey line, such as the time to full.",
+    "dependencies": [],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json"
+    ],
+    "files": [
+      {
+        "path": "components/islandcn/battery-activity.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/battery-activity.tsx"
+      }
+    ]
+  },
+  {
+    "name": "split-demo",
+    "type": "registry:block",
+    "title": "Split: two activities at once",
+    "description": "A timer and music running together: the island splits into the attached pill and a detached capsule, and holding either side expands that activity.",
+    "dependencies": [
+      "@hugeicons/core-free-icons@^4.4.0",
+      "@hugeicons/react@^1.1.10"
+    ],
+    "registryDependencies": [
+      "{{REGISTRY_URL}}/island-core.json",
+      "{{REGISTRY_URL}}/island-content.json",
+      "{{REGISTRY_URL}}/level-meter.json",
+      "{{REGISTRY_URL}}/ticking-time.json",
+      "{{REGISTRY_URL}}/timer-activity.json",
+      "{{REGISTRY_URL}}/now-playing-activity.json"
+    ],
+    "files": [
+      {
+        "path": "examples/split-demo.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/demos/split-demo.tsx"
+      },
+      {
+        "path": "examples/demo-stage.tsx",
+        "type": "registry:component",
+        "target": "components/islandcn/demos/demo-stage.tsx"
+      },
+      {
+        "path": "examples/samples.ts",
+        "type": "registry:component",
+        "target": "components/islandcn/demos/samples.ts"
+      }
+    ]
+  }
+]

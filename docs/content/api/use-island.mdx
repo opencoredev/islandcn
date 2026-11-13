@@ -1,0 +1,126 @@
+---
+title: "useIsland"
+description: "The hook that starts, updates, expands and ends activities, and reports what the island shows."
+---
+
+```tsx
+import { useIsland, useIslandActions, useIslandReducedMotion } from "@/lib/island";
+```
+
+## `useIsland()`
+
+Call it in any component under an `IslandProvider`. The returned object is stable, so it is safe in effect dependencies. Reading `activities` or `presentation` during render re-renders the component when they change.
+
+```tsx
+"use client";
+
+import { CompactText } from "@/components/islandcn/island-text";
+import { ProgressRing } from "@/components/islandcn/progress-ring";
+import { useIsland } from "@/lib/island";
+
+export const useUpload = () => {
+  const island = useIsland();
+
+  return () => {
+    const upload = island.start({
+      id: "upload",
+      label: "Uploading report.pdf",
+      compact: { leading: <ProgressRing value={0.4} />, trailing: <CompactText>40%</CompactText> },
+      minimal: <ProgressRing value={0.4} />,
+    });
+
+    island.expand("upload"); // what a long-press does
+    island.collapse();
+    upload.end();
+  };
+};
+```
+
+### Returns
+
+```ts
+import type { Activity, ActivityHandle, ActivityOptions, ActivityUpdate } from "@/lib/island";
+
+interface IslandApi {
+  start(options: ActivityOptions): ActivityHandle; // same id again updates it
+  update(id: string, update: ActivityUpdate): void;
+  end(id: string): void;                     // dismiss with the system motion
+  expand(id?: string): void;                 // default: the primary activity
+  collapse(): void;
+  readonly activities: readonly Activity[];  // primary first, hidden group members included
+  readonly presentation: "idle" | "compact" | "minimal" | "expanded";
+}
+```
+
+| Member | Description |
+| --- | --- |
+| `start(options)` | Adds an activity and returns its [handle](/api/use-island#activityhandle). Starting the same `id` again updates it instead. See [ActivityOptions](/api/activity-options) |
+| `update(id, update)` | Changes a running activity. Nested content merges, so `{ compact: { trailing } }` keeps the leading slot |
+| `end(id)` | Removes the activity with the dismiss motion |
+| `expand(id?)` | Expands an activity, the primary one by default. It stays expanded until a press outside, Escape or `collapse()`. On an activity hidden in a group, it brings that one forward |
+| `collapse()` | Returns to compact (or the split, with two activities) |
+| `activities` | Running activities, primary first. Primary means highest `priority`, then first started, among those on show. Activities hidden in a [group](/guides/activities#groups) are listed too; each has a `group` field |
+| `presentation` | What the island shows now |
+
+`useIsland()` throws if no `IslandProvider` is above the component.
+
+## `useIslandActions()`
+
+Returns the same `IslandApi` without subscribing, and throws without a provider the same way: the component never re-renders because the island changed. Use it in components that only start, update and end activities, such as the content kit's `useActivity`. Reading `activities` or `presentation` from it gives the current value at the time you read it.
+
+```tsx
+"use client";
+
+import { Glyph } from "@/components/islandcn/glyph";
+import { PackageGlyph } from "@/components/islandcn/glyphs";
+import { useIslandActions } from "@/lib/island";
+
+export const OrderButton = () => {
+  const island = useIslandActions();
+  return <button onClick={() => island.start({ id: "order", compact: { leading: <Glyph icon={PackageGlyph} /> } })}>Order</button>;
+};
+```
+
+## `useIslandReducedMotion()`
+
+Returns `true` when the island runs reduced motion: the provider's `reducedMotion` setting resolved against the system's `prefers-reduced-motion`. Use it to turn off your own animations inside activity content. See [Reduced motion](/guides/motion#reduced-motion).
+
+## ActivityHandle
+
+
+```ts
+import type { ActivityUpdate } from "@/lib/island";
+
+interface ActivityHandle {
+  readonly id: string;
+  update(update: ActivityUpdate): void;
+  end(): void;
+}
+```
+
+```tsx
+"use client";
+
+import { CompactText, ExpandedTitle } from "@/components/islandcn/island-text";
+import { useIslandActions } from "@/lib/island";
+
+export const useUploadIsland = () => {
+  const island = useIslandActions();
+
+  return () => {
+    const upload = island.start({ id: "upload", compact: { trailing: <CompactText>0%</CompactText> } });
+
+    upload.update({ compact: { trailing: <CompactText>80%</CompactText> } });
+    upload.update({ alert: true, expanded: { center: <ExpandedTitle>Upload finished</ExpandedTitle> } });
+    upload.end();
+  };
+};
+```
+
+| Member | Description |
+| --- | --- |
+| `id` | The activity's id |
+| `update(update)` | Same as `island.update(id, update)`. Nested content merges. See [ActivityUpdate](/api/activity-options#activityupdate) |
+| `end()` | Same as `island.end(id)`: removes the activity with the dismiss motion. With nothing else running, the pill returns to idle |
+
+The handle holds no state of its own, so you can drop it and call `island.update(id, ...)` later with the same id.
