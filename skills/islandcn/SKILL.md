@@ -109,7 +109,7 @@ Then wire each app event to one island call:
 | The task starts | `island.start(...)`, or mount a component that calls `useActivity` |
 | A value moves (progress, price, score, distance) | `update` in place: `NumberText` digits turn over, `LinearProgress` springs |
 | The value ticks every second or faster (a clock, a countdown, levels) | Nothing per tick: `TickingTime`, `CountdownRing` or `LevelMeter` read the source themselves |
-| It reaches a new stage (preparing to on the way, step 2 to 3, a new track) | `update` with `transition: "crossfade"` |
+| It reaches a new stage ("preparing" to "on the way", step 2 to 3, a new track) | `update` with `transition: "crossfade"` |
 | Something the user must notice now (failed, gate changed, delivered, a code arrived) | `update` with `alert: true` (or `alert: true` on `start`): it expands, holds about 6 s, folds back |
 | It needs an answer (approve, pay, accept) | `island.expand(id)` and keep it open; `island.collapse()` once answered |
 | It finishes | Show the final state (an alert, or a check for a few seconds), then `end` |
