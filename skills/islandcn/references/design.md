@@ -37,7 +37,7 @@ Inner shapes follow the pill's curve. A tile or button inset by `p` from a corne
 - Text is white. Secondary text is `rgba(235, 235, 245, 0.62)`, tertiary 0.36 (`islandInk`).
 - One hue per activity, carrying meaning: green for calls, charging and arrival (`#32d74b`); orange for timers and caution (`#ff9f0a`); red for recording, failure and destructive actions (`#ff453a`); blue for progress (`#0a84ff`); lagoon (`#46f0c6`) for agents, islandcn's own accent.
 - Fills inside the pill: white at 14% for neutral buttons and tracks, the accent at 16% behind a tile's glyph (`tint(accent, 0.16)`).
-- On a dark page the black pill nearly vanishes at rest. The phone draws a thin grey keyline just outside the edge (1.5 pt, white at 0.16 over #000, fading out by about #2C2C2E), and so does the engine: `<Island backdrop="#0b0b0f" />` sets its strength from the page colour, `keyline="on"` or `"off"` forces it. It is 7% weaker on the expanded island, absent at idle, and dims during a collapse.
+- On a dark page the black pill nearly vanishes at rest. The phone draws a thin grey keyline just outside the edge (1.5 pt, white at 0.16 over #000, fading out by about #2C2C2E), and so does the engine: `<Island backdrop="#0b0b0f" />` sets its strength from the page colour; `keyline="on"` or `"off"` forces it. It is 7% weaker on the expanded island, absent at idle, and dims during a collapse.
 
 ## Type
 
